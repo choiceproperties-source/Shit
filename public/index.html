@@ -33,6 +33,12 @@
             </div>
         </header>
 
+    <div id="main-nav" style="background: rgba(0,0,0,0.2); padding: 10px; margin-bottom: 20px; text-align: center; border-radius: 8px;">
+        <button class="btn-submit" onclick="app.showView('application')" style="padding: 8px 15px; font-size: 14px; background: var(--primary);"><i class="fas fa-edit"></i> Apply</button>
+        <button class="btn-submit" onclick="app.showView('dashboard')" style="padding: 8px 15px; font-size: 14px; background: var(--secondary);"><i class="fas fa-user-circle"></i> Dashboard</button>
+    </div>
+
+    <div id="application-view">
         <div class="progress-container">
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
@@ -100,8 +106,8 @@
                 </ul>
             </div>
             <div style="margin-top: 30px;">
-                <button class="btn-submit" onclick="window.print()" style="margin: 8px;">
-                    <i class="fas fa-print"></i> <span data-i18n="printBtn">Print Summary</span>
+                <button class="btn-submit" onclick="app.showView('dashboard')" style="margin: 8px;">
+                    <i class="fas fa-tachometer-alt"></i> <span data-i18n="viewDashboard">View Dashboard</span>
                 </button>
                 <button class="btn-next" onclick="location.reload()" style="margin: 8px;">
                     <i class="fas fa-plus"></i> <span data-i18n="newBtn">New Application</span>
@@ -111,7 +117,65 @@
         
         <form id="rentalApplication" enctype="multipart/form-data">
             <input type="hidden" name="Application ID" id="formApplicationId">
-            
+            <!-- ... sections 1-5 ... -->
+        </form>
+    </div>
+
+    <div id="dashboard-view" style="display: none;">
+        <div class="card" style="background: white; color: #333; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+            <h2 style="color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 1rem; margin-bottom: 2rem;">
+                <i class="fas fa-tachometer-alt"></i> Applicant Dashboard
+            </h2>
+
+            <div id="dash-auth-form">
+                <p style="margin-bottom: 1.5rem; color: #666;">Enter your application details to check your status.</p>
+                <div class="form-group">
+                    <label>Application ID</label>
+                    <input type="text" id="dashAppId" class="form-control" placeholder="APP-XXXXXXXX">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="dashEmail" class="form-control" placeholder="your@email.com">
+                </div>
+                <button class="btn-submit" onclick="app.loadDashboardStatus()" style="width: 100%; margin-top: 1rem;">View Status</button>
+            </div>
+
+            <div id="dash-status-content" style="display: none;">
+                <div id="status-banner" style="padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; text-align: center;">
+                    <h3 id="dash-status-title" style="margin: 0;">Status</h3>
+                    <p id="dash-status-desc" style="margin-top: 0.5rem; opacity: 0.9;"></p>
+                </div>
+
+                <div id="payment-pending-info" style="display: none;">
+                    <div style="background: #fff8e1; border-left: 4px solid #ffc107; padding: 1.5rem; margin-bottom: 1.5rem;">
+                        <h4 style="color: #856404; margin-top: 0;"><i class="fas fa-exclamation-triangle"></i> Payment Required to Proceed</h4>
+                        <p style="color: #856404;">Your application has been received. To proceed, the application fee must be paid outside of this system.</p>
+                    </div>
+                    <h4>Accepted Payment Methods:</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 0.5rem;"><i class="fas fa-money-bill-wave" style="color: var(--success);"></i> Cash at Office</li>
+                        <li style="margin-bottom: 0.5rem;"><i class="fas fa-university" style="color: var(--primary);"></i> Wire Transfer</li>
+                        <li><i class="fas fa-check-circle" style="color: var(--secondary);"></i> Money Order</li>
+                    </ul>
+                    <p style="font-size: 0.9rem; color: #666; margin-top: 1.5rem; font-style: italic;">
+                        Once payment is confirmed, your application will move into review.
+                    </p>
+                </div>
+
+                <div id="under-review-info" style="display: none;">
+                    <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 1.5rem; margin-bottom: 1.5rem;">
+                        <h4 style="color: #0d47a1; margin-top: 0;"><i class="fas fa-search"></i> Application Under Review</h4>
+                        <p style="color: #0d47a1;">Our team is currently reviewing your application details. This process usually takes 2-3 business days.</p>
+                    </div>
+                    <div class="timeline" style="margin-top: 2rem; border-top: 1px solid #eee; padding-top: 1.5rem;">
+                        <p><strong>Next Steps:</strong> We will notify you via email as soon as a decision is made.</p>
+                    </div>
+                </div>
+
+                <button class="btn-submit" onclick="app.showView('application')" style="background: #eee; color: #333; margin-top: 2rem;">Back to Application</button>
+            </div>
+        </div>
+    </div>            
             <!-- Step 1: Property & Applicant Details -->
             <div class="form-section active" id="section1">
                 <h2><i class="fas fa-home"></i> Property & Applicant Details</h2>

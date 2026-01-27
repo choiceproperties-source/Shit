@@ -23,31 +23,56 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 }
 db.init_app(app)
 
+from sqlalchemy.orm import Mapped, mapped_column
+
 class Application(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    app_id = db.Column(db.String(20), unique=True, nullable=False)
-    first_name = db.Column(db.String(100), nullable=False)
-    last_name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(120), nullable=False)
-    property_address = db.Column(db.String(255), nullable=False)
-    application_status = db.Column(db.String(50), default="awaiting_payment")
-    payment_status = db.Column(db.String(50), default="pending")
-    payment_marked_by = db.Column(db.String(100))
-    payment_marked_at = db.Column(db.DateTime)
-    payment_note = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    data = db.Column(db.JSON)
+    __tablename__ = "applications"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    app_id: Mapped[str] = mapped_column(db.String(20), unique=True, nullable=False)
+    first_name: Mapped[str] = mapped_column(db.String(100), nullable=False)
+    last_name: Mapped[str] = mapped_column(db.String(100), nullable=False)
+    email: Mapped[str] = mapped_column(db.String(120), nullable=False)
+    property_address: Mapped[str] = mapped_column(db.String(255), nullable=False)
+    application_status: Mapped[str] = mapped_column(db.String(50), default="awaiting_payment")
+    payment_status: Mapped[str] = mapped_column(db.String(50), default="pending")
+    payment_marked_by: Mapped[str | None] = mapped_column(db.String(100))
+    payment_marked_at: Mapped[datetime | None] = mapped_column(db.DateTime)
+    payment_note: Mapped[str | None] = mapped_column(db.Text)
+    created_at: Mapped[datetime] = mapped_column(db.DateTime, default=datetime.utcnow)
+    data: Mapped[dict | None] = mapped_column(db.JSON)
 
 with app.app_context():
     db.create_all()
 
 @app.route('/')
 def serve_index():
+    if not app.static_folder:
+        return "Static folder not found", 500
     return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/<path:path>')
 def serve_static(path):
+    if not app.static_folder:
+        return "Static folder not found", 500
     return send_from_directory(app.static_folder, path)
+
+@app.route('/api/applications/status', methods=['POST'])
+def get_application_status():
+    data = request.json
+    app_id = data.get('app_id')
+    email = data.get('email')
+    
+    application = Application.query.filter_by(app_id=app_id, email=email).first()
+    if not application:
+        return jsonify({"error": "Application not found"}), 404
+        
+    return jsonify({
+        "app_id": application.app_id,
+        "application_status": application.application_status,
+        "payment_status": application.payment_status,
+        "first_name": application.first_name,
+        "last_name": application.last_name
+    })
 
 @app.route('/api/applications', methods=['POST'])
 def submit_application():
