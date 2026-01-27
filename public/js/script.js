@@ -252,12 +252,39 @@ class RentalApplication {
             
             this.handleSubmissionSuccess(applicationId);
             
+            // Send confirmation email via our new backend API
+            this.sendConfirmationEmail(formData);
+            
         } catch (error) {
             console.error('Submission error:', error);
             this.handleSubmissionError(error);
         }
     }
     
+    async sendConfirmationEmail(formData) {
+        try {
+            const response = await fetch('/api/send-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    to: formData.email,
+                    subject: 'Application Received - Choice Properties',
+                    content: `
+                        <h3>Thank you for your application!</h3>
+                        <p>Hi ${formData.firstName},</p>
+                        <p>We have received your rental application for <strong>${formData.propertyAddress}</strong>.</p>
+                        <p>Our team will review your information and get back to you within 2-3 business days.</p>
+                        <p>Best regards,<br>Choice Properties Management</p>
+                    `
+                })
+            });
+            const result = await response.json();
+            console.log('Email API response:', result);
+        } catch (error) {
+            console.error('Failed to send confirmation email:', error);
+        }
+    }
+
     handleSubmissionSuccess(applicationId) {
         this.updateSubmissionProgress(4, 'Submission complete!');
         this.hideSubmissionProgress();
