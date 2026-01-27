@@ -21,10 +21,10 @@
             <div class="tagline">Professional Property Management Solutions</div>
             <div class="trust-indicator" style="margin-top: 15px; font-size: 13px; display: flex; align-items: center; gap: 8px; opacity: 0.9;">
                 <i class="fas fa-shield-alt" title="Secure Connection"></i>
-                <span>Applications are processed securely using industry-standard practices.</span>
+                <span data-i18n="trustText">Applications are processed securely using industry-standard practices.</span>
             </div>
             <div class="time-estimate">
-                <i class="fas fa-clock"></i> Estimated time: 15-20 minutes
+                <i class="fas fa-clock"></i> <span data-i18n="timeEstimate">Estimated time: 15-20 minutes</span>
             </div>
             <div class="language-toggle" style="margin-top: 15px;">
                 <button type="button" id="langToggle" style="background: rgba(255,255,255,0.2); color: white; padding: 5px 12px; font-size: 12px; border: 1px solid rgba(255,255,255,0.3);">
@@ -38,23 +38,23 @@
                 <div class="progress-fill" id="progressFill"></div>
                 <div class="progress-step completed" id="step1">
                     <div class="step-number">1</div>
-                    <div class="step-label">Property & Applicant</div>
+                    <div class="step-label" data-i18n="propertyHeader">Property & Applicant</div>
                 </div>
                 <div class="progress-step active" id="step2">
                     <div class="step-number">2</div>
-                    <div class="step-label">Residency & Occupancy</div>
+                    <div class="step-label" data-i18n="residencyHeader">Residency & Occupancy</div>
                 </div>
                 <div class="progress-step" id="step3">
                     <div class="step-number">3</div>
-                    <div class="step-label">Employment & Income</div>
+                    <div class="step-label" data-i18n="employmentHeader">Employment & Income</div>
                 </div>
                 <div class="progress-step" id="step4">
                     <div class="step-number">4</div>
-                    <div class="step-label">Financial & References</div>
+                    <div class="step-label" data-i18n="financialHeader">Financial & References</div>
                 </div>
                 <div class="progress-step" id="step5">
                     <div class="step-number">5</div>
-                    <div class="step-label">Review & Submit</div>
+                    <div class="step-label" data-i18n="reviewHeader">Review & Submit</div>
                 </div>
             </div>
         </div>
@@ -116,11 +116,11 @@
             <div class="form-section active" id="section1">
                 <h2><i class="fas fa-home"></i> Property & Applicant Details</h2>
                 
-                <div class="required-note"><i class="fas fa-info-circle"></i> Fields marked with * are required</div>
+                <div class="required-note"><i class="fas fa-info-circle"></i> <span data-i18n="requiredNote">Fields marked with * are required</span></div>
                 
-                <h3>Property Information</h3>
+                <h3 data-i18n="propertyInfo">Property Information</h3>
                 <div class="form-group">
-                    <label class="required" for="propertyAddress">Property Address Applying For</label>
+                    <label class="required" for="propertyAddress" data-i18n="propertyAddressLabel">Property Address Applying For</label>
                     <input type="text" id="propertyAddress" name="Property Address" required placeholder="Street address, city, state, zip">
                     <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Please enter the property address</div>
                 </div>
@@ -128,39 +128,39 @@
                 <div class="form-row">
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="requestedMoveIn">Requested Move-in Date</label>
+                            <label class="required" for="requestedMoveIn" data-i18n="moveInLabel">Requested Move-in Date</label>
                             <input type="date" id="requestedMoveIn" name="Requested Move-in Date" required>
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="desiredLeaseTerm">Desired Lease Term</label>
+                            <label class="required" for="desiredLeaseTerm" data-i18n="leaseTermLabel">Desired Lease Term</label>
                             <select id="desiredLeaseTerm" name="Desired Lease Term" required>
-                                <option value="">Select term...</option>
-                                <option value="6 months">6 Months</option>
-                                <option value="12 months">12 Months (Standard)</option>
-                                <option value="18 months">18 Months</option>
-                                <option value="24 months">24 Months</option>
-                                <option value="Month-to-month">Month-to-month</option>
+                                <option value="" data-i18n="selectTerm">Select term...</option>
+                                <option value="6 months" data-i18n="months6">6 Months</option>
+                                <option value="12 months" data-i18n="months12">12 Months (Standard)</option>
+                                <option value="18 months" data-i18n="months18">18 Months</option>
+                                <option value="24 months" data-i18n="months24">24 Months</option>
+                                <option value="Month-to-month" data-i18n="monthToMonth">Month-to-month</option>
                             </select>
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                 </div>
                 
-                <h3>Primary Applicant Information</h3>
+                <h3 data-i18n="primaryApplicantInfo">Primary Applicant Information</h3>
                 <div class="form-row">
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="firstName">First Name</label>
+                            <label class="required" for="firstName" data-i18n="firstNameLabel">First Name</label>
                             <input type="text" id="firstName" name="First Name" required>
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="lastName">Last Name</label>
+                            <label class="required" for="lastName" data-i18n="lastNameLabel">Last Name</label>
                             <input type="text" id="lastName" name="Last Name" required>
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
@@ -170,14 +170,14 @@
                 <div class="form-row">
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="email">Email Address</label>
+                            <label class="required" for="email" data-i18n="emailLabel">Email Address</label>
                             <input type="email" id="email" name="Email" required placeholder="email@example.com">
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Invalid email</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="phone">Phone Number</label>
+                            <label class="required" for="phone" data-i18n="phoneLabel">Phone Number</label>
                             <input type="tel" id="phone" name="Phone" required placeholder="(555) 000-0000">
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Invalid phone</div>
                         </div>
@@ -187,30 +187,30 @@
                 <div class="form-row">
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="dob">Date of Birth</label>
+                            <label class="required" for="dob" data-i18n="dobLabel">Date of Birth</label>
                             <input type="date" id="dob" name="DOB" required>
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
-                            <label for="ssn">Social Security Number (Optional)</label>
+                            <label for="ssn" data-i18n="ssnLabel">Social Security Number (Optional)</label>
                             <div class="field-hint" style="font-size: 11px; color: var(--success); margin-bottom: 5px;">
-                                <i class="fas fa-lock"></i> Encrypted during transmission and stored securely
+                                <i class="fas fa-lock"></i> <span data-i18n="ssnHint">Encrypted during transmission and stored securely</span>
                             </div>
                             <div class="ssn-container">
                                 <input type="password" id="ssn" name="SSN" placeholder="XXX-XX-XXXX">
                                 <button type="button" class="ssn-toggle" id="ssnToggle" title="Toggle Visibility"><i class="fas fa-eye"></i></button>
                             </div>
-                            <div class="field-hint">Providing your SSN may help speed up identity and background verification when required by the property manager.</div>
-                            <div class="field-hint" style="font-size: 10px; color: #999; margin-top: 5px;">SSN is encrypted and only accessible to authorized reviewers. We do not share this information without legal or screening requirements.</div>
+                            <div class="field-hint" data-i18n="ssnDetailHint">Providing your SSN may help speed up identity and background verification when required by the property manager.</div>
+                            <div class="field-hint" style="font-size: 10px; color: #999; margin-top: 5px;" data-i18n="ssnPrivacyHint">SSN is encrypted and only accessible to authorized reviewers. We do not share this information without legal or screening requirements.</div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="btn-container">
                     <div></div>
-                    <button type="button" class="btn-next">Next Step <i class="fas fa-arrow-right"></i></button>
+                    <button type="button" class="btn-next"><span data-i18n="nextStep">Next Step</span> <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
             

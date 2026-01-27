@@ -53,19 +53,173 @@ class RentalApplication {
         const translations = {
             en: {
                 langText: 'Español',
+                trustText: 'Applications are processed securely using industry-standard practices.',
+                timeEstimate: 'Estimated time: 15-20 minutes',
                 propertyHeader: 'Property & Applicant Details',
                 residencyHeader: 'Residency & Occupancy',
                 employmentHeader: 'Employment & Income',
                 financialHeader: 'Financial & References',
-                reviewHeader: 'Review & Submit'
+                reviewHeader: 'Review & Submit',
+                requiredNote: 'Fields marked with * are required',
+                propertyInfo: 'Property Information',
+                propertyAddressLabel: 'Property Address Applying For',
+                moveInLabel: 'Requested Move-in Date',
+                leaseTermLabel: 'Desired Lease Term',
+                selectTerm: 'Select term...',
+                months6: '6 Months',
+                months12: '12 Months (Standard)',
+                months18: '18 Months',
+                months24: '24 Months',
+                monthToMonth: 'Month-to-month',
+                primaryApplicantInfo: 'Primary Applicant Information',
+                firstNameLabel: 'First Name',
+                lastNameLabel: 'Last Name',
+                emailLabel: 'Email Address',
+                phoneLabel: 'Phone Number',
+                dobLabel: 'Date of Birth',
+                ssnLabel: 'Social Security Number (Optional)',
+                ssnHint: 'Encrypted during transmission and stored securely',
+                ssnDetailHint: 'Providing your SSN may help speed up identity and background verification when required by the property manager.',
+                ssnPrivacyHint: 'SSN is encrypted and only accessible to authorized reviewers. We do not share this information without legal or screening requirements.',
+                nextStep: 'Next Step',
+                prevStep: 'Previous',
+                currentResidence: 'Current Residence',
+                currentAddressLabel: 'Current Address',
+                residencyStartLabel: 'How long at this address?',
+                rentAmountLabel: 'Current Rent/Mortgage Amount',
+                reasonLeavingLabel: 'Reason for leaving',
+                landlordNameLabel: 'Current Landlord Name',
+                landlordPhoneLabel: 'Landlord Phone',
+                occupantsPets: 'Occupants & Pets',
+                totalOccupantsLabel: 'Number of total occupants (including children)',
+                occupantNamesLabel: 'Names and ages of all other occupants',
+                hasPetsLabel: 'Do you have any pets?',
+                yes: 'Yes',
+                no: 'No',
+                petDetailsLabel: 'Pet details (type, breed, weight)',
+                employmentHeaderTitle: 'Employment & Income',
+                currentEmployment: 'Current Employment',
+                employmentStatusLabel: 'Employment Status',
+                selectStatus: 'Select status...',
+                fullTime: 'Full-time',
+                partTime: 'Part-time',
+                selfEmployed: 'Self-employed',
+                student: 'Student',
+                retired: 'Retired',
+                unemployed: 'Unemployed',
+                employerLabel: 'Current Employer',
+                jobTitleLabel: 'Job Title',
+                employmentDurationLabel: 'How long at this job?',
+                supervisorNameLabel: 'Supervisor Name',
+                supervisorPhoneLabel: 'Supervisor Phone',
+                incomeVerification: 'Income Verification',
+                monthlyIncomeLabel: 'Gross Monthly Income',
+                otherIncomeLabel: 'Other Monthly Income',
+                incomeHint: 'Before taxes and deductions',
+                otherIncomeHint: 'Child support, disability, etc.',
+                financialHeaderTitle: 'Financial & References',
+                personalReferences: 'Personal References',
+                referencesHint: 'Please provide two references not related to you',
+                ref1NameLabel: 'Reference 1 Name (Required)',
+                ref1PhoneLabel: 'Reference 1 Phone (Required)',
+                ref2NameLabel: 'Reference 2 Name (Optional)',
+                reviewHeaderTitle: 'Review & Submit',
+                appSummary: 'Application Summary',
+                appFeeLabel: 'Application Fee:',
+                appFeeHint: 'Application fee is a non-refundable $50 and is required before your application can be reviewed.',
+                nextStepsTitle: 'Next Steps Timeline',
+                step1Title: 'Step 1: Submission & Confirmation Email (Instant)',
+                step2Title: 'Step 2: Manager Review (2-3 Business Days)',
+                step3Title: 'Step 3: Background & Credit Check (If Required)',
+                step4Title: 'Step 4: Final Approval & Lease Signature',
+                legalDeclaration: 'Legal Declaration',
+                termsAgreeLabel: 'I agree to the terms and conditions',
+                submitBtn: 'Submit Application'
             },
             es: {
                 langText: 'English',
+                trustText: 'Las solicitudes se procesan de forma segura utilizando prácticas estándar de la industria.',
+                timeEstimate: 'Tiempo estimado: 15-20 minutos',
                 propertyHeader: 'Detalles de la Propiedad y el Solicitante',
                 residencyHeader: 'Residencia y Ocupación',
                 employmentHeader: 'Empleo e Ingresos',
                 financialHeader: 'Finanzas y Referencias',
-                reviewHeader: 'Revisar y Enviar'
+                reviewHeader: 'Revisar y Enviar',
+                requiredNote: 'Los campos marcados con * son obligatorios',
+                propertyInfo: 'Información de la Propiedad',
+                propertyAddressLabel: 'Dirección de la propiedad que solicita',
+                moveInLabel: 'Fecha de mudanza solicitada',
+                leaseTermLabel: 'Plazo de arrendamiento deseado',
+                selectTerm: 'Seleccionar plazo...',
+                months6: '6 Meses',
+                months12: '12 Meses (Estándar)',
+                months18: '18 Meses',
+                months24: '24 Meses',
+                monthToMonth: 'Mes a mes',
+                primaryApplicantInfo: 'Información del Solicitante Principal',
+                firstNameLabel: 'Nombre',
+                lastNameLabel: 'Apellido',
+                emailLabel: 'Correo Electrónico',
+                phoneLabel: 'Número de Teléfono',
+                dobLabel: 'Fecha de Nacimiento',
+                ssnLabel: 'Número de Seguro Social (Opcional)',
+                ssnHint: 'Encriptado durante la transmisión y almacenado de forma segura',
+                ssnDetailHint: 'Proporcionar su SSN puede ayudar a acelerar la verificación de identidad y antecedentes cuando lo requiera el administrador de la propiedad.',
+                ssnPrivacyHint: 'El SSN está encriptado y solo es accesible para revisores autorizados. No compartimos esta información sin requisitos legales o de selección.',
+                nextStep: 'Siguiente Paso',
+                prevStep: 'Anterior',
+                currentResidence: 'Residencia Actual',
+                currentAddressLabel: 'Dirección Actual',
+                residencyStartLabel: '¿Cuánto tiempo en esta dirección?',
+                rentAmountLabel: 'Monto actual de alquiler/hipoteca',
+                reasonLeavingLabel: 'Razón para mudarse',
+                landlordNameLabel: 'Nombre del propietario actual',
+                landlordPhoneLabel: 'Teléfono del propietario',
+                occupantsPets: 'Ocupantes y Mascotas',
+                totalOccupantsLabel: 'Número total de ocupantes (incluyendo niños)',
+                occupantNamesLabel: 'Nombres y edades de todos los demás ocupantes',
+                hasPetsLabel: '¿Tiene mascotas?',
+                yes: 'Sí',
+                no: 'No',
+                petDetailsLabel: 'Detalles de la mascota (tipo, raza, peso)',
+                employmentHeaderTitle: 'Empleo e Ingresos',
+                currentEmployment: 'Empleo Actual',
+                employmentStatusLabel: 'Estado de Empleo',
+                selectStatus: 'Seleccionar estado...',
+                fullTime: 'Tiempo completo',
+                partTime: 'Medio tiempo',
+                selfEmployed: 'Trabajador independiente',
+                student: 'Estudiante',
+                retired: 'Jubilado',
+                unemployed: 'Desempleado',
+                employerLabel: 'Empleador Actual',
+                jobTitleLabel: 'Título del puesto',
+                employmentDurationLabel: '¿Cuánto tiempo en este trabajo?',
+                supervisorNameLabel: 'Nombre del supervisor',
+                supervisorPhoneLabel: 'Teléfono del supervisor',
+                incomeVerification: 'Verificación de Ingresos',
+                monthlyIncomeLabel: 'Ingreso Mensual Bruto',
+                otherIncomeLabel: 'Otros Ingresos Mensuales',
+                incomeHint: 'Antes de impuestos y deducciones',
+                otherIncomeHint: 'Pensión alimenticia, discapacidad, etc.',
+                financialHeaderTitle: 'Finanzas y Referencias',
+                personalReferences: 'Referencias Personales',
+                referencesHint: 'Por favor, proporcione dos referencias que no sean parientes',
+                ref1NameLabel: 'Nombre de Referencia 1 (Obligatorio)',
+                ref1PhoneLabel: 'Teléfono de Referencia 1 (Obligatorio)',
+                ref2NameLabel: 'Nombre de Referencia 2 (Opcional)',
+                reviewHeaderTitle: 'Revisar y Enviar',
+                appSummary: 'Resumen de la Solicitud',
+                appFeeLabel: 'Tarifa de Solicitud:',
+                appFeeHint: 'La tarifa de solicitud es de $50 no reembolsables y se requiere antes de que su solicitud pueda ser revisada.',
+                nextStepsTitle: 'Cronograma de Próximos Pasos',
+                step1Title: 'Paso 1: Envío y correo de confirmación (Instantáneo)',
+                step2Title: 'Paso 2: Revisión del administrador (2-3 días hábiles)',
+                step3Title: 'Paso 3: Verificación de antecedentes y crédito (si es necesario)',
+                step4Title: 'Paso 4: Aprobación final y firma del contrato',
+                legalDeclaration: 'Declaración Legal',
+                termsAgreeLabel: 'Acepto los términos y condiciones',
+                submitBtn: 'Enviar Solicitud'
             }
         };
 
@@ -79,7 +233,16 @@ class RentalApplication {
                 const t = translations[this.state.language];
                 text.textContent = t.langText;
                 
-                // Update Headers (Example of partial translation)
+                // Full Page Translation
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (t[key]) el.textContent = t[key];
+                });
+
+                // Update placeholders and options if needed
+                this.updateBilingualLabels(t);
+                
+                // Update Headers
                 document.querySelector('#section1 h2').innerHTML = `<i class="fas fa-home"></i> ${t.propertyHeader}`;
                 document.querySelector('#section2 h2').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${t.residencyHeader}`;
                 document.querySelector('#section3 h2').innerHTML = `<i class="fas fa-briefcase"></i> ${t.employmentHeader}`;
@@ -88,6 +251,120 @@ class RentalApplication {
                 
                 this.saveProgress();
             });
+        }
+    }
+
+    updateBilingualLabels(t) {
+        // Section 1 Labels
+        this.updateLabel('propertyAddress', t.propertyAddressLabel);
+        this.updateLabel('requestedMoveIn', t.moveInLabel);
+        this.updateLabel('desiredLeaseTerm', t.leaseTermLabel);
+        this.updateLabel('firstName', t.firstNameLabel);
+        this.updateLabel('lastName', t.lastNameLabel);
+        this.updateLabel('email', t.emailLabel);
+        this.updateLabel('phone', t.phoneLabel);
+        this.updateLabel('dob', t.dobLabel);
+        this.updateLabel('ssn', t.ssnLabel);
+        
+        // Section 2 Labels
+        this.updateLabel('currentAddress', t.currentAddressLabel);
+        this.updateLabel('residencyStart', t.residencyStartLabel);
+        this.updateLabel('rentAmount', t.rentAmountLabel);
+        this.updateLabel('reasonLeaving', t.reasonLeavingLabel);
+        this.updateLabel('landlordName', t.landlordNameLabel);
+        this.updateLabel('landlordPhone', t.landlordPhoneLabel);
+        this.updateLabel('totalOccupants', t.totalOccupantsLabel);
+        this.updateLabel('occupantNames', t.occupantNamesLabel);
+        
+        // Section 3 Labels
+        this.updateLabel('employmentStatus', t.employmentStatusLabel);
+        this.updateLabel('employer', t.employerLabel);
+        this.updateLabel('jobTitle', t.jobTitleLabel);
+        this.updateLabel('employmentDuration', t.employmentDurationLabel);
+        this.updateLabel('supervisorName', t.supervisorNameLabel);
+        this.updateLabel('supervisorPhone', t.supervisorPhoneLabel);
+        this.updateLabel('monthlyIncome', t.monthlyIncomeLabel);
+        this.updateLabel('otherIncome', t.otherIncomeLabel);
+        
+        // Section 4 Labels
+        this.updateLabel('ref1Name', t.ref1NameLabel);
+        this.updateLabel('ref1Phone', t.ref1PhoneLabel);
+        this.updateLabel('ref2Name', t.ref2NameLabel);
+        
+        // Step titles
+        const section2H3 = document.querySelector('#section2 h3');
+        if (section2H3) section2H3.textContent = t.currentResidence;
+        const section2OccupantsH3 = document.querySelectorAll('#section2 h3')[1];
+        if (section2OccupantsH3) section2OccupantsH3.textContent = t.occupantsPets;
+        
+        const section3H3 = document.querySelector('#section3 h3');
+        if (section3H3) section3H3.textContent = t.currentEmployment;
+        const section3IncomeH3 = document.querySelectorAll('#section3 h3')[1];
+        if (section3IncomeH3) section3IncomeH3.textContent = t.incomeVerification;
+        
+        const section4H3 = document.querySelector('#section4 h3');
+        if (section4H3) section4H3.textContent = t.personalReferences;
+
+        // Radio labels
+        const petsLabel = document.querySelector('label[for="petsYes"]')?.parentElement?.previousElementSibling;
+        if (petsLabel) petsLabel.textContent = t.hasPetsLabel;
+        const yesLabel = document.querySelector('label[for="petsYes"]');
+        if (yesLabel) yesLabel.textContent = t.yes;
+        const noLabel = document.querySelector('label[for="petsNo"]');
+        if (noLabel) noLabel.textContent = t.no;
+
+        // Select Options
+        const leaseSelect = document.getElementById('desiredLeaseTerm');
+        if (leaseSelect) {
+            leaseSelect.options[0].textContent = t.selectTerm;
+            leaseSelect.options[1].textContent = t.months6;
+            leaseSelect.options[2].textContent = t.months12;
+            leaseSelect.options[3].textContent = t.months18;
+            leaseSelect.options[4].textContent = t.months24;
+            leaseSelect.options[5].textContent = t.monthToMonth;
+        }
+
+        const empSelect = document.getElementById('employmentStatus');
+        if (empSelect) {
+            empSelect.options[0].textContent = t.selectStatus;
+            empSelect.options[1].textContent = t.fullTime;
+            empSelect.options[2].textContent = t.partTime;
+            empSelect.options[3].textContent = t.selfEmployed;
+            empSelect.options[4].textContent = t.student;
+            empSelect.options[5].textContent = t.retired;
+            empSelect.options[6].textContent = t.unemployed;
+        }
+
+        // Buttons
+        document.querySelectorAll('.btn-next').forEach(b => {
+            const icon = b.querySelector('i');
+            b.innerHTML = `${t.nextStep} `;
+            if (icon) b.appendChild(icon);
+        });
+        document.querySelectorAll('.btn-prev').forEach(b => {
+            const icon = b.querySelector('i');
+            b.innerHTML = '';
+            if (icon) b.appendChild(icon);
+            b.appendChild(document.createTextNode(` ${t.prevStep}`));
+        });
+        
+        const submitBtn = document.querySelector('.btn-submit');
+        if (submitBtn) submitBtn.textContent = t.submitBtn;
+    }
+
+    updateLabel(id, text) {
+        const label = document.querySelector(`label[for="${id}"]`);
+        if (label) {
+            const isRequired = label.classList.contains('required');
+            label.textContent = text;
+            if (isRequired) label.classList.add('required');
+        } else {
+            // Fallback for fields without for/id match (like radio groups)
+            const input = document.getElementById(id);
+            if (input && input.type === 'radio') {
+                const groupLabel = input.closest('.form-group')?.querySelector('label');
+                if (groupLabel) groupLabel.textContent = text;
+            }
         }
     }
 
