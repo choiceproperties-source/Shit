@@ -130,13 +130,12 @@
                     <div class="form-col">
                         <div class="form-group">
                             <label class="required" for="desiredLeaseTerm">Desired Lease Term</label>
-                            <select id="desiredLeaseTerm" name="Lease Term" required>
-                                <option value="">Select term...</option>
+                            <option value="">Select term...</option>
+                                <option value="6 months">6 Months</option>
                                 <option value="12 months">12 Months (Standard)</option>
                                 <option value="18 months">18 Months</option>
                                 <option value="24 months">24 Months</option>
                                 <option value="Month-to-month">Month-to-month</option>
-                                <option value="Other">Other</option>
                             </select>
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
@@ -189,11 +188,13 @@
                     <div class="form-col">
                         <div class="form-group">
                             <label for="ssn">Social Security Number (Optional)</label>
+                            <div class="field-hint" style="font-size: 11px; color: var(--success); margin-bottom: 5px;">🔒 Encrypted during transmission and stored securely</div>
                             <div class="ssn-container">
                                 <input type="password" id="ssn" name="SSN" placeholder="XXX-XX-XXXX">
                                 <button type="button" class="ssn-toggle" id="ssnToggle">Show</button>
                             </div>
-                            <div class="field-hint">Used for credit screening purposes only</div>
+                            <div class="field-hint">Providing your SSN may help speed up identity and background verification when required by the property manager.</div>
+                            <div class="field-hint" style="font-size: 10px; color: #999; margin-top: 5px;">SSN is encrypted and only accessible to authorized reviewers. We do not share this information without legal or screening requirements.</div>
                         </div>
                     </div>
                 </div>
@@ -392,14 +393,14 @@
                 <div class="form-row">
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="ref1Name">Reference 1 Name</label>
+                            <label class="required" for="ref1Name">Reference 1 Name (Required)</label>
                             <input type="text" id="ref1Name" name="Reference 1 Name" required>
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="ref1Phone">Reference 1 Phone</label>
+                            <label class="required" for="ref1Phone">Reference 1 Phone (Required)</label>
                             <input type="tel" id="ref1Phone" name="Reference 1 Phone" required>
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
@@ -409,16 +410,14 @@
                 <div class="form-row">
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="ref2Name">Reference 2 Name</label>
-                            <input type="text" id="ref2Name" name="Reference 2 Name" required>
-                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
+                            <label for="ref2Name">Reference 2 Name (Optional)</label>
+                            <input type="text" id="ref2Name" name="Reference 2 Name">
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="ref2Phone">Reference 2 Phone</label>
-                            <input type="tel" id="ref2Phone" name="Reference 2 Phone" required>
-                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
+                            <label for="ref2Phone">Reference 2 Phone (Optional)</label>
+                            <input type="tel" id="ref2Phone" name="Reference 2 Phone">
                         </div>
                     </div>
                 </div>
@@ -474,6 +473,13 @@
                 
                 <div class="summary-section">
                     <h3>Application Summary</h3>
+                    <div class="application-fee-display" style="background: #eef7ee; padding: 15px; border-radius: 8px; border-left: 4px solid var(--success); margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: bold; color: var(--dark);">Application Fee:</span>
+                            <span style="font-size: 20px; font-weight: 800; color: var(--success);">$50.00</span>
+                        </div>
+                        <p style="font-size: 12px; color: #666; margin-top: 8px;">Application fee is a non-refundable $50 and is required before your application can be reviewed.</p>
+                    </div>
                     <div id="applicationSummary">
                         <!-- Populated by JavaScript -->
                     </div>
@@ -510,6 +516,11 @@
                 <div class="btn-container">
                     <button type="button" class="btn-prev"><i class="fas fa-arrow-left"></i> Previous</button>
                     <button type="submit" class="btn-submit">Submit Application <i class="fas fa-paper-plane"></i></button>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button type="button" id="startOverBtn" style="background: none; border: none; color: var(--danger); font-size: 14px; cursor: pointer; text-decoration: underline; margin: 0 auto; display: block;">
+                        <i class="fas fa-undo"></i> Clear Application & Start Over
+                    </button>
                 </div>
             </div>
         </form>

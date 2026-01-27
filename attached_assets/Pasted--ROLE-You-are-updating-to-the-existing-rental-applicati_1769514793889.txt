@@ -1,0 +1,157 @@
+
+ROLE:
+You are updating to the existing rental application project built with HTML, CSS, and vanilla JavaScript.
+The project structure is separated into HTML, CSS, and JS files and is currently working.
+
+IMPORTANT RULES:
+	•	Do NOT redesign the UI
+	•	Do NOT remove or rename existing fields unless instructed
+	•	Do NOT change submission flow or backend logic
+	•	Do NOT break existing validation or navigation
+	•	Only implement the updates listed below
+	•	Keep all changes minimal and additive
+
+
+🎯 REQUIRED UPDATES (IMPLEMENT ALL)
+
+1️⃣ APPLICATION FEE (FIXED)
+	•	Set the application fee as a fixed $50
+	•	Display it clearly in the Review / Submit section
+	•	Add a clarity note below it:
+
+“Application fee is a non-refundable $50 and is required before your application can be reviewed.”
+
+	•	Do NOT make the fee editable
+	•	Do NOT integrate payment processing
+
+⸻
+
+2️⃣ ADDRESS AUTOCOMPLETE (GEOAPIFY)
+	•	Implement address autocomplete using Geoapify API
+	•	Use this API key:
+
+bea2afb13c904abea5cb2c2693541dcf
+
+	•	Enable autocomplete for:
+	•	Property address
+	•	Current residence address
+	•	Addresses should autocomplete as the user types
+	•	When an address is selected:
+	•	Auto-fill street, city, state, and ZIP where applicable
+	•	Do not break manual typing if autocomplete fails
+
+⸻
+
+3️⃣ AUTO-SAVE (NON-DISTRACTING)
+	•	Implement automatic form saving:
+	•	Save progress on input change (debounced)
+	
+	•	Display a subtle save indicator, not alerts:
+	•	Example (small text near header or footer):
+
+“Progress saved”
+
+	•	The message should:
+	•	Appear briefly
+	•	Fade out automatically
+	•	Never interrupt the user
+
+⸻
+
+4️⃣ LEASE TERM OPTIONS
+
+Update the lease term field to include:
+	•	6 Months
+	•	12 Months
+	•	18 Months
+	•	24 Months
+	•	Month-to-Month (if already allowed)
+
+Ensure:
+	•	Dropdown behavior stays the same
+	•	Existing selection logic is preserved
+
+⸻
+
+5️⃣ REAL-TIME INPUT FORMATTING & VALIDATION
+
+Add automatic formatting while the user types for:
+	•	Phone numbers → (XXX) XXX-XXXX
+	•	SSN → XXX-XX-XXXX (masked input)
+	•	Dates → browser native date input or validated format
+
+Rules:
+	•	Formatting should be automatic
+	•	Validation should be inline and friendly
+	•	Do NOT show red errors while typing
+	•	Block submission only if invalid at submit time
+
+⸻
+
+6️⃣ SSN FIELD UX (OPTIONAL, TRUST-FOCUSED)
+
+Next to the SSN field (small, subtle text):
+
+🔒 Encrypted during transmission and stored securely
+
+Label:
+
+Social Security Number (Optional)
+
+Helper text below field:
+
+Providing your SSN may help speed up identity and background verification when required by the property manager.
+
+Additional note (small, muted text):
+
+SSN is encrypted and only accessible to authorized reviewers.
+We do not share this information without legal or screening requirements.
+
+Rules:
+	•	SSN must remain optional
+	•	Keep masked input
+	•	Do NOT store SSN in localStorage
+
+⸻
+
+7️⃣ CLEAR FORM / RESET FEATURE
+
+Add a “Clear Application” or “Start Over” option that:
+	•	Clears all entered form data
+	•	Resets UI to initial state
+	•	Clears saved progress (localStorage/session)
+	•	Asks for confirmation before clearing
+
+Example confirmation text:
+
+“This will clear all entered information. Are you sure you want to start over?”
+
+⸻
+
+8️⃣ REFERENCES REQUIREMENT UPDATE
+	•	First reference → Required
+	•	Second reference → Optional
+	•	Update validation rules accordingly
+	•	Do not remove second reference fields
+
+⸻
+
+🛑 DO NOT DO THE FOLLOWING
+	•	Do NOT introduce new pages
+	•	Do NOT change backend integration
+	•	Do NOT add payment gateways
+	•	Do NOT alter submission status logic
+	•	Do NOT rename database fields
+
+⸻
+
+✅ FINAL CHECK
+
+After implementing:
+	•	Verify the form still submits correctly
+	•	Verify no console errors
+	•	Verify autocomplete works smoothly
+	•	Verify auto-save does not store sensitive data
+	•	Verify UI looks the same except for added clarity
+
+If any requirement is unclear, pause and ask before making assumptions.

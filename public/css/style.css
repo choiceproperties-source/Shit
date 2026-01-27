@@ -697,16 +697,17 @@
         .auto-save-indicator {
             position: fixed;
             bottom: 20px;
-            left: 20px;
-            background: var(--success);
+            right: 20px;
+            left: auto;
+            background: rgba(44, 62, 80, 0.8);
             color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 14px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
             display: none;
             z-index: 1000;
             box-shadow: var(--shadow);
-            animation: slideInUp 0.3s ease;
+            transition: opacity 0.5s ease;
         }
 
         .offline-indicator {

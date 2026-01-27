@@ -31,9 +31,95 @@ class RentalApplication {
         this.setupConditionalFields();
         this.setupCharacterCounters();
         this.restoreSavedProgress();
-        this.startAutoSave();
+        this.setupGeoapify();
+        this.setupInputFormatting();
         
         console.log('Rental Application Manager Initialized with FormSubmit');
+    }
+
+    setupGeoapify() {
+        const apiKey = "bea2afb13c904abea5cb2c2693541dcf";
+        const fields = ['propertyAddress', 'currentAddress'];
+        
+        fields.forEach(id => {
+            const input = document.getElementById(id);
+            if (!input) return;
+
+            const container = document.createElement('div');
+            container.style.position = 'relative';
+            input.parentNode.insertBefore(container, input);
+            container.appendChild(input);
+
+            const dropdown = document.createElement('div');
+            dropdown.className = 'autocomplete-dropdown';
+            dropdown.style.cssText = 'position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; z-index: 1000; display: none; max-height: 200px; overflow-y: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 4px;';
+            container.appendChild(dropdown);
+
+            input.addEventListener('input', this.debounce(async (e) => {
+                const text = e.target.value;
+                if (text.length < 3) {
+                    dropdown.style.display = 'none';
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(text)}&apiKey=${apiKey}`);
+                    const data = await response.json();
+                    
+                    if (data.features && data.features.length > 0) {
+                        dropdown.innerHTML = '';
+                        data.features.forEach(feature => {
+                            const item = document.createElement('div');
+                            item.style.cssText = 'padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; font-size: 14px;';
+                            item.textContent = feature.properties.formatted;
+                            item.addEventListener('mouseover', () => item.style.background = '#f0f7ff');
+                            item.addEventListener('mouseout', () => item.style.background = 'white');
+                            item.addEventListener('click', () => {
+                                input.value = feature.properties.formatted;
+                                dropdown.style.display = 'none';
+                                // Auto-save after selection
+                                this.saveProgress();
+                            });
+                            dropdown.appendChild(item);
+                        });
+                        dropdown.style.display = 'block';
+                    } else {
+                        dropdown.style.display = 'none';
+                    }
+                } catch (err) {
+                    console.error('Geoapify error:', err);
+                }
+            }, 300));
+
+            document.addEventListener('click', (e) => {
+                if (!container.contains(e.target)) dropdown.style.display = 'none';
+            });
+        });
+    }
+
+    setupInputFormatting() {
+        const phoneFields = ['phone', 'landlordPhone', 'supervisorPhone', 'ref1Phone', 'ref2Phone', 'emergencyPhone'];
+        phoneFields.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', (e) => {
+                    let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+                    e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+                });
+            }
+        });
+
+        const ssnEl = document.getElementById('ssn');
+        if (ssnEl) {
+            ssnEl.addEventListener('input', (e) => {
+                let val = e.target.value.replace(/\D/g, '');
+                let formatted = '';
+                if (val.length > 0) formatted += val.substr(0, 3);
+                if (val.length > 3) formatted += '-' + val.substr(3, 2);
+                if (val.length > 5) formatted += '-' + val.substr(5, 4);
+                e.target.value = formatted;
+            });
+        }
     }
     
     // =================== EVENT HANDLERS ===================
@@ -50,10 +136,25 @@ class RentalApplication {
             }
         });
         
+        // Start Over
+        const startOverBtn = document.getElementById('startOverBtn');
+        if (startOverBtn) {
+            startOverBtn.addEventListener('click', () => {
+                if (confirm('This will clear all entered information. Are you sure you want to start over?')) {
+                    this.clearSavedProgress();
+                    location.reload();
+                }
+            });
+        }
+        
         // Auto-save on input
-        document.addEventListener('input', this.debounce(() => {
-            this.queueSave();
-        }, 1000));
+        document.addEventListener('input', (e) => {
+            // Don't save SSN
+            if (e.target.id === 'ssn') return;
+            this.debounce(() => {
+                this.saveProgress();
+            }, 1000)();
+        });
         
         // Form submission handler
         const form = document.getElementById('rentalApplication');
@@ -270,7 +371,7 @@ class RentalApplication {
             1: ['propertyAddress', 'requestedMoveIn', 'desiredLeaseTerm', 'firstName', 'lastName', 'email', 'phone', 'dob'],
             2: ['currentAddress', 'residencyStart', 'rentAmount', 'reasonLeaving', 'landlordName', 'landlordPhone'],
             3: ['employmentStatus', 'employer', 'jobTitle', 'employmentDuration', 'supervisorName', 'supervisorPhone', 'monthlyIncome'],
-            4: ['ref1Name', 'ref1Phone', 'ref2Name', 'ref2Phone', 'emergencyName', 'emergencyPhone'],
+            4: ['ref1Name', 'ref1Phone', 'emergencyName', 'emergencyPhone'],
             5: ['termsAgree']
         };
         return fields[sectionNumber] || [];
@@ -369,11 +470,20 @@ class RentalApplication {
     
     saveProgress() {
         const data = this.getAllFormData();
+        // Securely ensure SSN is NOT in localStorage
+        delete data.SSN;
+        delete data.ssn;
+        
         localStorage.setItem(this.config.LOCAL_STORAGE_KEY, JSON.stringify(data));
         const indicator = document.getElementById('autoSaveIndicator');
         if (indicator) {
             indicator.style.display = 'block';
-            setTimeout(() => indicator.style.display = 'none', 2000);
+            indicator.style.opacity = '1';
+            indicator.textContent = 'Progress saved';
+            setTimeout(() => {
+                indicator.style.opacity = '0';
+                setTimeout(() => indicator.style.display = 'none', 500);
+            }, 2000);
         }
     }
     
