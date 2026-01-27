@@ -955,12 +955,25 @@ class RentalApplication {
     setupRealTimeValidation() {
         const inputs = document.querySelectorAll('input, select, textarea');
         inputs.forEach(input => {
+            // Validate on blur as before
             input.addEventListener('blur', () => this.validateField(input));
-            input.addEventListener('input', this.debounce(() => {
-                if (input.value.trim().length > 0) {
+            
+            // For immediate correction: 
+            // If the field already has an error class, validate on every input
+            // Otherwise, use the debounced validation to avoid flickering
+            input.addEventListener('input', () => {
+                if (input.classList.contains('error')) {
                     this.validateField(input);
+                } else {
+                    // Debounce logic if not already in error state
+                    if (this.validationTimeout) clearTimeout(this.validationTimeout);
+                    this.validationTimeout = setTimeout(() => {
+                        if (input.value.trim().length > 0) {
+                            this.validateField(input);
+                        }
+                    }, 800);
                 }
-            }, 800));
+            });
         });
     }
     setupFileUploads() {
