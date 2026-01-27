@@ -21,7 +21,8 @@ def submit_application():
     try:
         data = request.json
         applicant_email = data.get('email')
-        applicant_name = data.get('firstName', '') + ' ' + data.get('lastName', '')
+        # ... logic ...
+        applicant_name = f"{data.get('firstName', '')} {data.get('lastName', '')}".strip()
         lang = request.headers.get('Accept-Language', 'en').startswith('es') and 'es' or 'en'
         
         if not applicant_email:
@@ -30,15 +31,14 @@ def submit_application():
         # Generate unique application_id
         application_id = Application.generate_application_id()
         
-        # Create application record
-        app_record = Application(
-            application_id=application_id,
-            applicant_email=applicant_email,
-            applicant_name=applicant_name.strip(),
-            application_status='awaiting_payment',
-            payment_status='pending',
-            form_data=data
-        )
+        # Create application record with statuses set as required
+        app_record = Application()
+        app_record.application_id = application_id
+        app_record.applicant_email = applicant_email
+        app_record.applicant_name = applicant_name
+        app_record.application_status = 'awaiting_payment'
+        app_record.payment_status = 'pending'
+        app_record.form_data = data
         
         db.session.add(app_record)
         db.session.commit()
