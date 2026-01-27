@@ -44,8 +44,51 @@ class RentalApplication {
         this.restoreSavedProgress();
         this.setupGeoapify();
         this.setupInputFormatting();
+        this.setupLanguageToggle();
         
-        console.log('Rental Application Manager Initialized with FormSubmit');
+        console.log('Rental Application Manager Initialized with Supabase');
+    }
+
+    setupLanguageToggle() {
+        const translations = {
+            en: {
+                langText: 'Español',
+                propertyHeader: 'Property & Applicant Details',
+                residencyHeader: 'Residency & Occupancy',
+                employmentHeader: 'Employment & Income',
+                financialHeader: 'Financial & References',
+                reviewHeader: 'Review & Submit'
+            },
+            es: {
+                langText: 'English',
+                propertyHeader: 'Detalles de la Propiedad y el Solicitante',
+                residencyHeader: 'Residencia y Ocupación',
+                employmentHeader: 'Empleo e Ingresos',
+                financialHeader: 'Finanzas y Referencias',
+                reviewHeader: 'Revisar y Enviar'
+            }
+        };
+
+        this.state.language = 'en';
+        const btn = document.getElementById('langToggle');
+        const text = document.getElementById('langText');
+        
+        if (btn && text) {
+            btn.addEventListener('click', () => {
+                this.state.language = this.state.language === 'en' ? 'es' : 'en';
+                const t = translations[this.state.language];
+                text.textContent = t.langText;
+                
+                // Update Headers (Example of partial translation)
+                document.querySelector('#section1 h2').innerHTML = `<i class="fas fa-home"></i> ${t.propertyHeader}`;
+                document.querySelector('#section2 h2').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${t.residencyHeader}`;
+                document.querySelector('#section3 h2').innerHTML = `<i class="fas fa-briefcase"></i> ${t.employmentHeader}`;
+                document.querySelector('#section4 h2').innerHTML = `<i class="fas fa-list-ul"></i> ${t.financialHeader}`;
+                document.querySelector('#section5 h2').innerHTML = `<i class="fas fa-check-double"></i> ${t.reviewHeader}`;
+                
+                this.saveProgress();
+            });
+        }
     }
 
     setupGeoapify() {
@@ -608,6 +651,10 @@ class RentalApplication {
         // SECURE: Explicitly sanitize sensitive data from persistent storage
         const sensitiveKeys = ['SSN', 'ssn', 'social_security', 'Social Security'];
         sensitiveKeys.forEach(key => delete data[key]);
+        
+        // Add session recovery metadata
+        data._last_updated = new Date().toISOString();
+        data._language = this.state.language || 'en';
         
         localStorage.setItem(this.config.LOCAL_STORAGE_KEY, JSON.stringify(data));
         this.showAutoSaveIndicator();
