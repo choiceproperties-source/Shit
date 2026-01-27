@@ -1,0 +1,120 @@
+🎯 OBJECTIVE
+
+Improve the rental application form by implementing the following selected enhancements only, in a safe, legally appropriate, and technically reasonable way.
+
+Do not introduce unapproved features, claims, or integrations.
+
+⸻
+
+1️⃣ TRUST & CREDIBILITY (UI ONLY – NO FALSE CLAIMS)
+
+Implement visual trust indicators using generic language only:
+	•	Display a secure connection indicator (lock icon + tooltip)
+	•	Add professional trust text such as:
+	•	“Applications are processed securely using industry-standard practices.”
+	•	Example: “Background checks may use industry-standard providers such as TransUnion or Experian where permitted.”
+
+⸻
+
+2️⃣ PERFORMANCE & RELIABILITY
+	•	localStorage caching: Persist non-sensitive form data for recovery and faster return visits.
+	•	Offline-safe persistence: Ensure data is not lost if the connection drops.
+	•	Client-side image optimization: Compress uploaded images before upload.
+
+⚠️ CRITICAL:
+	•	Do NOT persist sensitive data (SSN, government ID, banking info) in localStorage.
+	•	Sensitive fields may exist only in memory during active session.
+
+⸻
+
+3️⃣ SMART FORM BEHAVIOR & UX
+
+Enhance form behavior with:
+	•	Real-time validation: Show helpful, human-readable feedback (not just errors).
+	•	Context-sensitive help: Tooltips explaining why sensitive info is required.
+	•	Session recovery: Restore progress after refresh or crash using safe backups.
+
+⸻
+
+4️⃣ ERROR PREVENTION & DATA QUALITY
+
+Implement intelligent safeguards:
+	•	Auto-format:
+	•	Phone numbers
+	•	Dates
+	•	SSN (masked input)
+	•	Prevent impossible values:
+	•	Move-in dates in the past
+	•	Illogical date sequences
+	•	Consistency checks: Warn if rent vs income appears unrealistic.
+	•	Duplicate detection: Soft warning if email/phone matches an existing application.
+
+⚠️ Duplicate detection must be informational only, not blocking.
+
+⸻
+
+5️⃣ LANGUAGE SUPPORT (LIMITED SCOPE)
+	•	Provide UI language toggle:
+	•	English
+	•	Spanish
+	•	Translate:
+	•	Labels
+	•	Help text
+	•	Instructions
+
+⚠️ DO NOT translate:
+	•	Legal disclosures
+	•	Authorization language
+	•	Compliance text
+
+⸻
+
+6️⃣ DATA PRIVACY & SECURITY TRANSPARENCY (UI LEVEL)
+
+Implement:
+	•	Encryption indicator during submission (simple lock icon + message)
+	
+
+❌ Do NOT claim audits, certifications, or regulatory approval.
+
+⸻
+
+7️⃣ POST-SUBMISSION EXPERIENCE
+
+After successful submission:
+	•	Send confirmation email via SendGrid
+	•	Display a Next Steps timeline (e.g., review window, follow-up expectations)
+	•	Provide access to a status dashboard (read-only for applicant)
+
+Optional but allowed:
+	•	In-app status notifications
+	•	SMS is NOT required at this stage
+
+⸻
+
+8️⃣ SAVE & RESUME
+
+Implement:
+	•	Secure, token-based “Save & Resume” link
+	•	Time-limited access
+	•	Ability to continue on another device
+
+⸻
+
+🚫 EXPLICIT NON-GOALS (DO NOT IMPLEMENT)
+	•	PDF generation
+	•	SMS integration
+	•	Claims of third-party audits
+	•	AI document verification
+	•	Credit decision automation
+
+If any feature appears ambiguous, pause and ask before proceeding.
+
+⸻
+
+✅ DELIVERY EXPECTATIONS
+	•	Improve UX while preserving existing data structures
+	•	Do not modify legal language
+	•	Do not invent compliance claims
+	•	Keep implementation modular and phase-ready
+	•	Comment code clearly where sensitive data handling is involved
