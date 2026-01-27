@@ -111,38 +111,48 @@ class RentalApplication {
                 jobTitleLabel: 'Job Title',
                 employmentDurationLabel: 'How long at this job?',
                 supervisorNameLabel: 'Supervisor Name',
-                supervisorPhoneLabel: 'Supervisor Phone',
-                incomeVerification: 'Income Verification',
-                monthlyIncomeLabel: 'Gross Monthly Income',
-                otherIncomeLabel: 'Other Monthly Income',
-                incomeHint: 'Before taxes and deductions',
-                otherIncomeHint: 'Child support, disability, etc.',
-                financialHeaderTitle: 'Financial & References',
-                personalReferences: 'Personal References',
-                referencesHint: 'Please provide two references not related to you',
-                ref1NameLabel: 'Reference 1 Name (Required)',
-                ref1PhoneLabel: 'Reference 1 Phone (Required)',
-                ref2NameLabel: 'Reference 2 Name (Optional)',
-                emergencyInfo: 'Emergency Contact',
-                emergencyNameLabel: 'Contact Name',
-                emergencyPhoneLabel: 'Contact Phone',
-                reviewHeaderTitle: 'Review & Submit',
-                appSummary: 'Application Summary',
-                appFeeLabel: 'Application Fee:',
-                appFeeHint: 'Application fee is a non-refundable $50 and is required before your application can be reviewed.',
-                nextStepsTitle: 'Next Steps Timeline',
-                step1Title: 'Step 1: Submission & Confirmation Email (Instant)',
-                step2Title: 'Step 2: Manager Review (2-3 Business Days)',
-                step3Title: 'Step 3: Background & Credit Check (If Required)',
-                step4Title: 'Step 4: Final Approval & Lease Signature',
-                documentUpload: 'Document Upload (Optional)',
-                dropZoneText: 'Drag & drop files here or click to browse',
-                fileLimits: 'PDF, JPG, PNG (Max 10MB)',
-                legalDeclaration: 'Legal Declaration',
-                legalCertify: 'I certify that the information provided in this application is true and correct to the best of my knowledge. I understand that any false statements may be grounds for rejection of this application or termination of any subsequent lease agreement.',
-                legalAuthorize: 'I authorize Choice Properties to verify the information provided, including credit history, employment, and references. Background checks may use industry-standard providers such as TransUnion or Experian where permitted.',
-                termsAgreeLabel: 'I agree to the terms and conditions',
-                submitBtn: 'Submit Application'
+                supervisorPhoneLabel: 'Teléfono del supervisor',
+                incomeVerification: 'Verificación de Ingresos',
+                monthlyIncomeLabel: 'Ingreso Mensual Bruto',
+                otherIncomeLabel: 'Otros Ingresos Mensuales',
+                incomeHint: 'Antes de impuestos y deducciones',
+                otherIncomeHint: 'Pensión alimenticia, discapacidad, etc.',
+                financialHeaderTitle: 'Finanzas y Referencias',
+                personalReferences: 'Referencias Personales',
+                referencesHint: 'Por favor, proporcione dos referencias que no sean parientes',
+                ref1NameLabel: 'Nombre de Referencia 1 (Obligatorio)',
+                ref1PhoneLabel: 'Teléfono de Referencia 1 (Obligatorio)',
+                ref2NameLabel: 'Nombre de Referencia 2 (Opcional)',
+                emergencyInfo: 'Contacto de Emergencia',
+                emergencyNameLabel: 'Nombre de Contacto',
+                emergencyPhoneLabel: 'Teléfono de Contacto',
+                reviewHeaderTitle: 'Revisar y Enviar',
+                appSummary: 'Resumen de la Solicitud',
+                appFeeLabel: 'Tarifa de Solicitud:',
+                appFeeHint: 'La tarifa de solicitud es de $50 no reembolsables y se requiere antes de que su solicitud pueda ser revisada.',
+                nextStepsTitle: 'Cronograma de Próximos Pasos',
+                step1Title: 'Paso 1: Envío y correo de confirmación (Instantáneo)',
+                step2Title: 'Paso 2: Revisión del administrador (2-3 días hábiles)',
+                step3Title: 'Paso 3: Verificación de antecedentes y crédito (si es necesario)',
+                step4Title: 'Paso 4: Aprobación final y firma del contrato',
+                documentUpload: 'Carga de Documentos (Opcional)',
+                dropZoneText: 'Arrastre y suelte archivos aquí o haga clic para buscar',
+                fileLimits: 'PDF, JPG, PNG (Máx. 10 MB)',
+                legalDeclaration: 'Declaración Legal',
+                legalCertify: 'Certifico que la información proporcionada en esta solicitud es verdadera y correcta a mi mejor saber y entender. Entiendo que cualquier declaración falsa puede ser motivo de rechazo de esta solicitud o de terminación de cualquier contrato de arrendamiento posterior.',
+                legalAuthorize: 'Autorizo a Choice Properties a verificar la información proporcionada, incluyendo historial crediticio, empleo y referencias. Las verificaciones de antecedentes pueden utilizar proveedores estándar de la industria como TransUnion o Experian donde esté permitido.',
+                termsAgreeLabel: 'Acepto los términos y condiciones',
+                submitBtn: 'Submit Application',
+                errRequired: 'Required',
+                errEmail: 'Invalid email',
+                errPhone: 'Invalid phone',
+                errAddress: 'Please enter the property address',
+                errMoveInPast: 'Move-in date cannot be in the past.',
+                errIncomeRatio: 'Warning: Monthly income is less than 2.5x the rent. This may affect approval.',
+                msgEmailValid: 'Email address looks good.',
+                msgPhoneVerified: 'Phone number verified.',
+                msgDateSelected: 'Date selected.',
+                msgIncomeMeets: 'Income meets standard requirements.'
             },
             es: {
                 langText: 'English',
@@ -254,10 +264,21 @@ class RentalApplication {
                 newBtn: 'Nueva solicitud',
                 errorSendGrid: 'SendGrid no está configurado en el servidor',
                 errorGeneral: 'Ocurrió un error al enviar la solicitud',
-                errorEmailSent: 'Correo electrónico enviado'
+                errorEmailSent: 'Correo electrónico enviado',
+                errRequired: 'Campo obligatorio',
+                errEmail: 'Correo electrónico inválido',
+                errPhone: 'Teléfono inválido',
+                errAddress: 'Por favor, ingrese la dirección',
+                errMoveInPast: 'La fecha de mudanza no puede ser en el pasado',
+                errIncomeRatio: 'Advertencia: El ingreso mensual es inferior a 2.5 veces el alquiler. Esto puede afectar la aprobación.',
+                msgEmailValid: 'El correo electrónico se ve bien.',
+                msgPhoneVerified: 'Teléfono verificado.',
+                msgDateSelected: 'Fecha seleccionada.',
+                msgIncomeMeets: 'El ingreso cumple con los requisitos estándar.'
             }
         };
 
+        this.translations = translations;
         this.state.language = 'en';
         const btn = document.getElementById('langToggle');
         const text = document.getElementById('langText');
@@ -775,6 +796,7 @@ class RentalApplication {
     }
     
     validateField(field) {
+        const t = this.getTranslations();
         const value = field.value.trim();
         const parent = field.parentElement;
         let helpText = parent.querySelector('.field-help-feedback');
@@ -788,26 +810,26 @@ class RentalApplication {
         }
 
         if (field.required && !value) {
-            this.updateFieldFeedback(field, helpText, 'This field is required to process your application.', 'invalid');
+            this.updateFieldFeedback(field, helpText, t.errRequired || 'Required', 'invalid');
             return false;
         }
         
         if (value && field.type === 'email') {
             const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
             if (!isValid) {
-                this.updateFieldFeedback(field, helpText, 'Please enter a valid email address (e.g., name@example.com).', 'invalid');
+                this.updateFieldFeedback(field, helpText, t.errEmail || 'Invalid email', 'invalid');
                 return false;
             }
-            this.updateFieldFeedback(field, helpText, 'Email address looks good.', 'valid');
+            this.updateFieldFeedback(field, helpText, t.msgEmailValid || 'Email address looks good.', 'valid');
         }
 
         if (value && field.type === 'tel') {
             const isValid = value.replace(/\D/g, '').length >= 10;
             if (!isValid) {
-                this.updateFieldFeedback(field, helpText, 'Please enter a full 10-digit phone number.', 'invalid');
+                this.updateFieldFeedback(field, helpText, t.errPhone || 'Invalid phone', 'invalid');
                 return false;
             }
-            this.updateFieldFeedback(field, helpText, 'Phone number verified.', 'valid');
+            this.updateFieldFeedback(field, helpText, t.msgPhoneVerified || 'Phone number verified.', 'valid');
         }
         
         // Move-in date validation
@@ -816,10 +838,10 @@ class RentalApplication {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             if (selectedDate < today) {
-                this.updateFieldFeedback(field, helpText, 'Move-in date cannot be in the past.', 'invalid');
+                this.updateFieldFeedback(field, helpText, t.errMoveInPast || 'Move-in date cannot be in the past.', 'invalid');
                 return false;
             }
-            this.updateFieldFeedback(field, helpText, 'Date selected.', 'valid');
+            this.updateFieldFeedback(field, helpText, t.msgDateSelected || 'Date selected.', 'valid');
         }
 
         // Rent vs Income Consistency Check
@@ -829,9 +851,9 @@ class RentalApplication {
             if (income > 0 && rent > 0) {
                 const ratio = income / rent;
                 if (ratio < 2.5) {
-                    this.updateFieldFeedback(field, helpText, 'Warning: Monthly income is less than 2.5x the rent. This may affect approval.', 'invalid');
+                    this.updateFieldFeedback(field, helpText, t.errIncomeRatio || 'Warning: Monthly income is less than 2.5x the rent.', 'invalid');
                 } else {
-                    this.updateFieldFeedback(field, helpText, 'Income meets standard requirements.', 'valid');
+                    this.updateFieldFeedback(field, helpText, t.msgIncomeMeets || 'Income meets standard requirements.', 'valid');
                 }
             }
         }
@@ -856,15 +878,23 @@ class RentalApplication {
     }
     
     showFieldError(field, hasError) {
+        const t = this.getTranslations();
         if (hasError) {
             field.classList.add('error');
             const errorMsg = field.parentElement.querySelector('.error-message');
-            if (errorMsg) errorMsg.style.display = 'block';
+            if (errorMsg) {
+                errorMsg.style.display = 'block';
+                errorMsg.textContent = t.errRequired || 'Required';
+            }
         } else {
             field.classList.remove('error');
             const errorMsg = field.parentElement.querySelector('.error-message');
             if (errorMsg) errorMsg.style.display = 'none';
         }
+    }
+
+    getTranslations() {
+        return this.translations[this.state.language] || this.translations['en'];
     }
     
     getRequiredFieldsForSection(sectionNumber) {
