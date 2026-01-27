@@ -167,14 +167,16 @@ class RentalApplication {
         // SSN Toggle
         const ssnToggle = document.getElementById('ssnToggle');
         if (ssnToggle) {
-            ssnToggle.addEventListener('click', () => {
+            ssnToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 const ssnInput = document.getElementById('ssn');
                 if (ssnInput.type === 'password') {
                     ssnInput.type = 'text';
-                    ssnToggle.textContent = 'Hide';
+                    ssnToggle.innerHTML = '<i class="fas fa-eye-slash"></i>';
                 } else {
                     ssnInput.type = 'password';
-                    ssnToggle.textContent = 'Show';
+                    ssnToggle.innerHTML = '<i class="fas fa-eye"></i>';
                 }
             });
         }
