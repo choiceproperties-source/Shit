@@ -301,26 +301,26 @@
             <div class="form-section" id="section3">
                 <h2><i class="fas fa-briefcase"></i> Employment & Income</h2>
                 
-                <h3>Current Employment</h3>
+                <h3 data-i18n="currentEmployment">Current Employment</h3>
                 <div class="form-row">
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="employmentStatus">Employment Status</label>
+                            <label class="required" for="employmentStatus" data-i18n="employmentStatusLabel">Employment Status</label>
                             <select id="employmentStatus" name="Employment Status" required>
-                                <option value="">Select status...</option>
-                                <option value="Full-time">Full-time</option>
-                                <option value="Part-time">Part-time</option>
-                                <option value="Self-employed">Self-employed</option>
-                                <option value="Student">Student</option>
-                                <option value="Retired">Retired</option>
-                                <option value="Unemployed">Unemployed</option>
+                                <option value="" data-i18n="selectStatus">Select status...</option>
+                                <option value="Full-time" data-i18n="fullTime">Full-time</option>
+                                <option value="Part-time" data-i18n="partTime">Part-time</option>
+                                <option value="Self-employed" data-i18n="selfEmployed">Self-employed</option>
+                                <option value="Student" data-i18n="student">Student</option>
+                                <option value="Retired" data-i18n="retired">Retired</option>
+                                <option value="Unemployed" data-i18n="unemployed">Unemployed</option>
                             </select>
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="employer">Current Employer</label>
+                            <label class="required" for="employer" data-i18n="employerLabel">Current Employer</label>
                             <input type="text" id="employer" name="Employer" required>
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
@@ -330,14 +330,14 @@
                 <div class="form-row">
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="jobTitle">Job Title</label>
+                            <label class="required" for="jobTitle" data-i18n="jobTitleLabel">Job Title</label>
                             <input type="text" id="jobTitle" name="Job Title" required>
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="employmentDuration">How long at this job?</label>
+                            <label class="required" for="employmentDuration" data-i18n="employmentDurationLabel">How long at this job?</label>
                             <input type="text" id="employmentDuration" name="Employment Duration" required placeholder="e.g., 3 years">
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
@@ -347,35 +347,35 @@
                 <div class="form-row">
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="supervisorName">Supervisor Name</label>
+                            <label class="required" for="supervisorName" data-i18n="supervisorNameLabel">Supervisor Name</label>
                             <input type="text" id="supervisorName" name="Supervisor Name" required>
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="supervisorPhone">Supervisor Phone</label>
+                            <label class="required" for="supervisorPhone" data-i18n="supervisorPhoneLabel">Supervisor Phone</label>
                             <input type="tel" id="supervisorPhone" name="Supervisor Phone" required>
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                 </div>
                 
-                <h3>Income Verification</h3>
+                <h3 data-i18n="incomeVerification">Income Verification</h3>
                 <div class="form-row">
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="monthlyIncome">Gross Monthly Income</label>
+                            <label class="required" for="monthlyIncome" data-i18n="monthlyIncomeLabel">Gross Monthly Income</label>
                             <input type="text" id="monthlyIncome" name="Monthly Income" required placeholder="$">
-                            <div class="field-hint">Before taxes and deductions</div>
+                            <div class="field-hint" data-i18n="incomeHint">Before taxes and deductions</div>
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
-                            <label for="otherIncome">Other Monthly Income</label>
+                            <label for="otherIncome" data-i18n="otherIncomeLabel">Other Monthly Income</label>
                             <input type="text" id="otherIncome" name="Other Income" placeholder="$">
-                            <div class="field-hint">Child support, disability, etc.</div>
+                            <div class="field-hint" data-i18n="otherIncomeHint">Child support, disability, etc.</div>
                         </div>
                     </div>
                 </div>
@@ -396,20 +396,20 @@
             <div class="form-section" id="section4">
                 <h2><i class="fas fa-list-ul"></i> Financial & References</h2>
                 
-                <h3>Personal References</h3>
-                <p class="field-hint">Please provide two references not related to you</p>
+                <h3 data-i18n="personalReferences">Personal References</h3>
+                <p class="field-hint" data-i18n="referencesHint">Please provide two references not related to you</p>
                 
                 <div class="form-row">
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="ref1Name">Reference 1 Name (Required)</label>
+                            <label class="required" for="ref1Name" data-i18n="ref1NameLabel">Reference 1 Name (Required)</label>
                             <input type="text" id="ref1Name" name="Reference 1 Name" required>
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
-                            <label class="required" for="ref1Phone">Reference 1 Phone (Required)</label>
+                            <label class="required" for="ref1Phone" data-i18n="ref1PhoneLabel">Reference 1 Phone (Required)</label>
                             <input type="tel" id="ref1Phone" name="Reference 1 Phone" required>
                             <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
@@ -419,7 +419,7 @@
                 <div class="form-row">
                     <div class="form-col">
                         <div class="form-group">
-                            <label for="ref2Name">Reference 2 Name (Optional)</label>
+                            <label for="ref2Name" data-i18n="ref2NameLabel">Reference 2 Name (Optional)</label>
                             <input type="text" id="ref2Name" name="Reference 2 Name">
                         </div>
                     </div>
@@ -449,24 +449,24 @@
                     </div>
                 </div>
                 
-                <h3>General Information</h3>
+                <h3 data-i18n="genInfo">General Information</h3>
                 <div class="form-group">
-                    <label>Have you ever been evicted?</label>
+                    <label data-i18n="evictedLabel">Have you ever been evicted?</label>
                     <div class="checkbox-group">
                         <input type="radio" id="evictedYes" name="Ever Evicted" value="Yes">
-                        <label for="evictedYes">Yes</label>
+                        <label for="evictedYes" data-i18n="yes">Yes</label>
                         <input type="radio" id="evictedNo" name="Ever Evicted" value="No" checked>
-                        <label for="evictedNo">No</label>
+                        <label for="evictedNo" data-i18n="no">No</label>
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label>Do you smoke?</label>
+                    <label data-i18n="smokeLabel">Do you smoke?</label>
                     <div class="checkbox-group">
                         <input type="radio" id="smokeYes" name="Smoker" value="Yes">
-                        <label for="smokeYes">Yes</label>
+                        <label for="smokeYes" data-i18n="yes">Yes</label>
                         <input type="radio" id="smokeNo" name="Smoker" value="No" checked>
-                        <label for="smokeNo">No</label>
+                        <label for="smokeNo" data-i18n="no">No</label>
                     </div>
                 </div>
                 

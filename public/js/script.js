@@ -123,6 +123,9 @@ class RentalApplication {
                 ref1NameLabel: 'Reference 1 Name (Required)',
                 ref1PhoneLabel: 'Reference 1 Phone (Required)',
                 ref2NameLabel: 'Reference 2 Name (Optional)',
+                emergencyInfo: 'Emergency Contact',
+                emergencyNameLabel: 'Contact Name',
+                emergencyPhoneLabel: 'Contact Phone',
                 reviewHeaderTitle: 'Review & Submit',
                 appSummary: 'Application Summary',
                 appFeeLabel: 'Application Fee:',
@@ -132,7 +135,12 @@ class RentalApplication {
                 step2Title: 'Step 2: Manager Review (2-3 Business Days)',
                 step3Title: 'Step 3: Background & Credit Check (If Required)',
                 step4Title: 'Step 4: Final Approval & Lease Signature',
+                documentUpload: 'Document Upload (Optional)',
+                dropZoneText: 'Drag & drop files here or click to browse',
+                fileLimits: 'PDF, JPG, PNG (Max 10MB)',
                 legalDeclaration: 'Legal Declaration',
+                legalCertify: 'I certify that the information provided in this application is true and correct to the best of my knowledge. I understand that any false statements may be grounds for rejection of this application or termination of any subsequent lease agreement.',
+                legalAuthorize: 'I authorize Choice Properties to verify the information provided, including credit history, employment, and references. Background checks may use industry-standard providers such as TransUnion or Experian where permitted.',
                 termsAgreeLabel: 'I agree to the terms and conditions',
                 submitBtn: 'Submit Application'
             },
@@ -208,6 +216,9 @@ class RentalApplication {
                 ref1NameLabel: 'Nombre de Referencia 1 (Obligatorio)',
                 ref1PhoneLabel: 'Teléfono de Referencia 1 (Obligatorio)',
                 ref2NameLabel: 'Nombre de Referencia 2 (Opcional)',
+                emergencyInfo: 'Contacto de Emergencia',
+                emergencyNameLabel: 'Nombre de Contacto',
+                emergencyPhoneLabel: 'Teléfono de Contacto',
                 reviewHeaderTitle: 'Revisar y Enviar',
                 appSummary: 'Resumen de la Solicitud',
                 appFeeLabel: 'Tarifa de Solicitud:',
@@ -217,7 +228,12 @@ class RentalApplication {
                 step2Title: 'Paso 2: Revisión del administrador (2-3 días hábiles)',
                 step3Title: 'Paso 3: Verificación de antecedentes y crédito (si es necesario)',
                 step4Title: 'Paso 4: Aprobación final y firma del contrato',
+                documentUpload: 'Carga de Documentos (Opcional)',
+                dropZoneText: 'Arrastre y suelte archivos aquí o haga clic para buscar',
+                fileLimits: 'PDF, JPG, PNG (Máx. 10 MB)',
                 legalDeclaration: 'Declaración Legal',
+                legalCertify: 'Certifico que la información proporcionada en esta solicitud es verdadera y correcta a mi mejor saber y entender. Entiendo que cualquier declaración falsa puede ser motivo de rechazo de esta solicitud o de terminación de cualquier contrato de arrendamiento posterior.',
+                legalAuthorize: 'Autorizo a Choice Properties a verificar la información proporcionada, incluyendo historial crediticio, empleo y referencias. Las verificaciones de antecedentes pueden utilizar proveedores estándar de la industria como TransUnion o Experian donde esté permitido.',
                 termsAgreeLabel: 'Acepto los términos y condiciones',
                 submitBtn: 'Enviar Solicitud'
             }
@@ -236,7 +252,14 @@ class RentalApplication {
                 // Full Page Translation
                 document.querySelectorAll('[data-i18n]').forEach(el => {
                     const key = el.getAttribute('data-i18n');
-                    if (t[key]) el.textContent = t[key];
+                    if (t[key]) {
+                        // Check if it's a strongly tagged element (like Step titles)
+                        if (el.tagName === 'SPAN' || el.tagName === 'H3' || el.tagName === 'H4' || el.tagName === 'P') {
+                            el.textContent = t[key];
+                        } else {
+                            el.textContent = t[key];
+                        }
+                    }
                 });
 
                 // Update placeholders and options if needed
