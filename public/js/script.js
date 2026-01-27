@@ -406,12 +406,69 @@ class RentalApplication {
     
     validateField(field) {
         const value = field.value.trim();
-        if (field.required && !value) return false;
+        const parent = field.parentElement;
+        let helpText = parent.querySelector('.field-help-feedback');
         
-        if (value && field.type === 'email') return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-        if (value && field.type === 'tel') return value.replace(/\D/g, '').length >= 10;
+        if (!helpText) {
+            helpText = document.createElement('div');
+            helpText.className = 'field-help-feedback';
+            helpText.style.fontSize = '12px';
+            helpText.style.marginTop = '4px';
+            parent.appendChild(helpText);
+        }
+
+        if (field.required && !value) {
+            this.updateFieldFeedback(field, helpText, 'This field is required to process your application.', 'invalid');
+            return false;
+        }
         
+        if (value && field.type === 'email') {
+            const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+            if (!isValid) {
+                this.updateFieldFeedback(field, helpText, 'Please enter a valid email address (e.g., name@example.com).', 'invalid');
+                return false;
+            }
+            this.updateFieldFeedback(field, helpText, 'Email address looks good.', 'valid');
+        }
+
+        if (value && field.type === 'tel') {
+            const isValid = value.replace(/\D/g, '').length >= 10;
+            if (!isValid) {
+                this.updateFieldFeedback(field, helpText, 'Please enter a full 10-digit phone number.', 'invalid');
+                return false;
+            }
+            this.updateFieldFeedback(field, helpText, 'Phone number verified.', 'valid');
+        }
+        
+        // Move-in date validation
+        if (field.id === 'requestedMoveIn' && value) {
+            const selectedDate = new Date(value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (selectedDate < today) {
+                this.updateFieldFeedback(field, helpText, 'Move-in date cannot be in the past.', 'invalid');
+                return false;
+            }
+            this.updateFieldFeedback(field, helpText, 'Date selected.', 'valid');
+        }
+        
+        this.updateFieldFeedback(field, helpText, '', 'none');
         return true;
+    }
+
+    updateFieldFeedback(field, helpElement, message, status) {
+        helpElement.textContent = message;
+        helpElement.style.display = message ? 'block' : 'none';
+        
+        if (status === 'invalid') {
+            helpElement.style.color = 'var(--danger)';
+            field.classList.add('error');
+        } else if (status === 'valid') {
+            helpElement.style.color = 'var(--success)';
+            field.classList.remove('error');
+        } else {
+            field.classList.remove('error');
+        }
     }
     
     showFieldError(field, hasError) {
@@ -481,7 +538,17 @@ class RentalApplication {
     }
     
     // =================== STUBS FOR MISSING METHODS ===================
-    setupRealTimeValidation() {}
+    setupRealTimeValidation() {
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('blur', () => this.validateField(input));
+            input.addEventListener('input', this.debounce(() => {
+                if (input.value.trim().length > 0) {
+                    this.validateField(input);
+                }
+            }, 800));
+        });
+    }
     setupFileUploads() {
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
