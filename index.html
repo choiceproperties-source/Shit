@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choice Properties - Enhanced Rental Application</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="confidential-stamp">
+                <i class="fas fa-lock"></i> CONFIDENTIAL & SECURE
+            </div>
+            <div class="logo">
+                <i class="fas fa-building"></i>
+                <div class="logo-text">Choice Properties</div>
+            </div>
+            <div class="tagline">Professional Property Management Solutions</div>
+            <div class="time-estimate">
+                <i class="fas fa-clock"></i> Estimated time: 15-20 minutes
+            </div>
+        </header>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-step completed" id="step1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Property & Applicant</div>
+                </div>
+                <div class="progress-step active" id="step2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Residency & Occupancy</div>
+                </div>
+                <div class="progress-step" id="step3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Employment & Income</div>
+                </div>
+                <div class="progress-step" id="step4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Financial & References</div>
+                </div>
+                <div class="progress-step" id="step5">
+                    <div class="step-number">5</div>
+                    <div class="step-label">Review & Submit</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submission Progress State -->
+        <div class="submission-progress" id="submissionProgress">
+            <div class="progress-steps">
+                <div class="progress-step-indicator">
+                    <div class="step-indicator active" id="step1Indicator">1</div>
+                    <div>Processing</div>
+                </div>
+                <div class="progress-step-indicator">
+                    <div class="step-indicator" id="step2Indicator">2</div>
+                    <div>Validating</div>
+                </div>
+                <div class="progress-step-indicator">
+                    <div class="step-indicator" id="step3Indicator">3</div>
+                    <div>Submitting</div>
+                </div>
+                <div class="progress-step-indicator">
+                    <div class="step-indicator" id="step4Indicator">4</div>
+                    <div>Complete</div>
+                </div>
+            </div>
+            <h3><i class="fas fa-spinner fa-spin pulse"></i> Submitting Your Application</h3>
+            <p id="submissionMessage">Please don't close this window. This may take a few moments...</p>
+        </div>
+
+        <!-- Success State -->
+        <div class="success-state" id="successState">
+            <i class="fas fa-check-circle"></i>
+            <h2>Application Submitted Successfully!</h2>
+            <p>Thank you for choosing Choice Properties. Your application has been received and is being processed.</p>
+            <div class="application-id">
+                Application ID: <strong id="successAppId">---</strong>
+            </div>
+            <div style="margin: 25px 0;">
+                <p style="font-weight: bold; margin-bottom: 15px;">What happens next?</p>
+                <ul style="text-align: left; display: inline-block; margin: 10px 0;">
+                    <li>You'll receive a confirmation email shortly</li>
+                    <li>We'll review your application within 2-3 business days</li>
+                    <li>We may contact you for additional information</li>
+                </ul>
+            </div>
+            <div style="margin-top: 30px;">
+                <button class="btn-submit" onclick="window.print()" style="margin: 8px;">
+                    <i class="fas fa-print"></i> Print Summary
+                </button>
+                <button class="btn-next" onclick="location.reload()" style="margin: 8px;">
+                    <i class="fas fa-plus"></i> New Application
+                </button>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div class="error-state" id="errorState">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Submission Failed</h3>
+            <p id="errorMessage">We encountered an error while processing your application.</p>
+            <button class="btn-submit" onclick="retrySubmission()" style="margin-top: 20px;">
+                <i class="fas fa-redo"></i> Try Again
+            </button>
+        </div>
+
+        <!-- Status Indicators -->
+        <div class="auto-save-indicator" id="autoSaveIndicator">
+            <i class="fas fa-save"></i> Progress saved successfully
+        </div>
+
+        <div class="offline-indicator" id="offlineIndicator">
+            <i class="fas fa-wifi"></i> You're offline - changes saved locally
+        </div>
+
+        <!-- Main Form Container -->
+        <div class="form-container" id="formContainer">
+            <!-- FormSubmit Form -->
+            <form 
+                id="rentalApplication" 
+                action="https://formsubmit.co/support.choiceproperties@protonmail.com" 
+                method="POST"
+                enctype="multipart/form-data"
+            >
+                <!-- FormSubmit Configuration -->
+                <input type="hidden" name="_subject" value="New Rental Application - Choice Properties">
+                <input type="hidden" name="_template" value="table">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_next" value="">
+                <input type="hidden" name="_autoresponse" value="Thank you for submitting your rental application to Choice Properties. We have received your application and will review it within 2-3 business days. You will hear from us soon regarding the next steps.">
+                
+                <!-- Application ID -->
+                <input type="hidden" name="application_id" id="formApplicationId" value="">
+
+                <!-- Section 1: Property & Applicant Information -->
+                <div class="form-section active" id="section1">
+                    <h2><i class="fas fa-home"></i> Property & Applicant Information</h2>
+                    
+                    <div class="section-completion">
+                        <i class="fas fa-check-circle" id="section1StatusIcon" style="color: var(--success); display: none;"></i>
+                        <span class="completion-status incomplete" id="section1Status">Incomplete</span>
+                    </div>
+                    
+                    <div class="required-note">
+                        <i class="fas fa-info-circle"></i> Fields marked with * are required
+                    </div>
+                    
+                    <div class="legal-section">
+                        <h3><i class="fas fa-shield-alt"></i> Notice to Applicants & Privacy Policy</h3>
+                        <p>Choice Properties is committed to providing equal housing opportunities and fully complies with the Federal Fair Housing Act. We do not discriminate based on race, color, religion, sex, national origin, familial status, disability, or any other state or locally protected class.</p>
+                        <p>All information provided is confidential and will only be used for rental screening and verification purposes. Sensitive data such as SSN and ID numbers will be securely stored and encrypted in compliance with data protection regulations.</p>
+                    </div>
+                    
+                    <h3>Property Information</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="propertyAddress" class="required">Property Address</label>
+                            <input type="text" id="propertyAddress" name="propertyAddress" placeholder="123 Main Street" required>
+                            <div class="error-message" id="propertyAddressError">Please enter the property address</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="unitNumber">Unit Number</label>
+                            <input type="text" id="unitNumber" name="unitNumber" placeholder="Apt 4B">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="moveInDate" class="required">Requested Move-In Date</label>
+                            <input type="date" id="moveInDate" name="moveInDate" required>
+                            <div class="error-message" id="moveInDateError">Please select a move-in date</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="leaseTerm" class="required">Lease Term</label>
+                            <select id="leaseTerm" name="leaseTerm" required>
+                                <option value="">Select Term</option>
+                                <option value="6 months">6 Months</option>
+                                <option value="12 months" selected>12 Months</option>
+                                <option value="18 months">18 Months</option>
+                                <option value="24 months">24 Months</option>
+                            </select>
+                            <div class="error-message" id="leaseTermError">Please select a lease term</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="propertySource" class="required">How did you hear about this property?</label>
+                            <select id="propertySource" name="propertySource" required>
+                                <option value="">Select Source</option>
+                                <option value="Website">Company Website</option>
+                                <option value="Zillow">Zillow</option>
+                                <option value="Apartments.com">Apartments.com</option>
+                                <option value="Realtor">Realtor</option>
+                                <option value="Friend">Friend/Family</option>
+                                <option value="Sign">For Rent Sign</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <div class="error-message" id="propertySourceError">Please select how you heard about this property</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="propertyViewing">Have you viewed the property?</label>
+                            <select id="propertyViewing" name="propertyViewing">
+                                <option value="">Select Option</option>
+                                <option value="Yes">Yes, in person</option>
+                                <option value="Virtual">Virtual tour only</option>
+                                <option value="No">Not yet</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <h3>Primary Applicant Information</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="fullName" class="required">Full Legal Name</label>
+                            <input type="text" id="fullName" name="fullName" placeholder="John A. Smith" required>
+                            <div class="validation-feedback" id="fullNameValidation"></div>
+                            <div class="error-message" id="fullNameError">Please enter your full legal name</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="dob" class="required">Date of Birth</label>
+                            <input type="date" id="dob" name="dob" required>
+                            <div class="error-message" id="dobError">Please enter your date of birth</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="ssn-container">
+                                <label for="ssn" class="required">Social Security Number</label>
+                                <input type="password" id="ssn" name="ssn" placeholder="XXX-XX-XXXX" required maxlength="11">
+                                <button type="button" class="ssn-toggle" id="ssnToggle">
+                                    <i class="fas fa-eye"></i> Show
+                                </button>
+                            </div>
+                            <div class="field-hint">Format: XXX-XX-XXXX (9 digits total)</div>
+                            <div class="error-message" id="ssnError">Please enter a valid SSN in format XXX-XX-XXXX (9 digits)</div>
+                            <div class="privacy-note">
+                                <i class="fas fa-lock"></i> Your SSN will be encrypted and stored securely for verification purposes only.
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <label for="dlNumber" class="required">Driver's License / State ID Number</label>
+                            <input type="text" id="dlNumber" name="dlNumber" required>
+                            <div class="error-message" id="dlNumberError">Please enter your driver's license or state ID number</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="dlState" class="required">Issuing State</label>
+                            <select id="dlState" name="dlState" required>
+                                <option value="">Select State</option>
+                            </select>
+                            <div class="error-message" id="dlStateError">Please select the issuing state</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="phone" class="required">Primary Phone Number</label>
+                            <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567" required maxlength="14">
+                            <div class="field-hint">Format: (XXX) XXX-XXXX (10 digits total)</div>
+                            <div class="validation-feedback" id="phoneValidation"></div>
+                            <div class="error-message" id="phoneError">Please enter a valid 10-digit phone number</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="email" class="required">Email Address</label>
+                            <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+                            <div class="validation-feedback" id="emailValidation"></div>
+                            <div class="error-message" id="emailError">Please enter a valid email address</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="maritalStatus">Marital Status</label>
+                            <select id="maritalStatus" name="maritalStatus">
+                                <option value="">Select Status</option>
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
+                                <option value="Divorced">Divorced</option>
+                                <option value="Widowed">Widowed</option>
+                                <option value="Separated">Separated</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <h3>Communication Preferences</h3>
+                    <div class="communication-preferences">
+                        <div class="communication-option">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="contactEmail" name="contactEmail" checked>
+                                <label for="contactEmail">Email</label>
+                            </div>
+                        </div>
+                        <div class="communication-option">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="contactPhone" name="contactPhone" checked>
+                                <label for="contactPhone">Phone</label>
+                            </div>
+                        </div>
+                        <div class="communication-option">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="contactSMS" name="contactSMS">
+                                <label for="contactSMS">Text Message</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3>Co-Applicants</h3>
+                    <div class="add-co-applicant" id="addCoApplicant">
+                        <i class="fas fa-user-plus"></i>
+                        <div>Add Co-Applicant</div>
+                    </div>
+                    
+                    <div id="coApplicantsContainer"></div>
+                    
+                    <div class="btn-container">
+                        <div></div>
+                        <button type="button" class="btn-next" onclick="RentalApp.nextSection(1)">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Section 2: Residency & Occupancy -->
+                <div class="form-section" id="section2">
+                    <h2><i class="fas fa-users"></i> Residency & Occupancy Information</h2>
+                    
+                    <div class="section-completion">
+                        <i class="fas fa-check-circle" id="section2StatusIcon" style="color: var(--success); display: none;"></i>
+                        <span class="completion-status incomplete" id="section2Status">Incomplete</span>
+                    </div>
+                    
+                    <h3>Occupancy Details</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="numOccupants" class="required">Total Number of Occupants</label>
+                            <input type="number" id="numOccupants" name="numOccupants" min="1" value="1" required>
+                            <div class="error-message" id="numOccupantsError">Please enter the number of occupants</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="occupantsList" class="required">List All Occupants (Including Minors) & Ages</label>
+                            <textarea id="occupantsList" name="occupantsList" rows="3" placeholder="John Smith (35), Jane Smith (33), Emily Smith (5)" maxlength="500" required></textarea>
+                            <div class="character-count" id="occupantsListCount">0/500 characters</div>
+                            <div class="error-message" id="occupantsListError">Please list all occupants and their ages</div>
+                        </div>
+                    </div>
+                    
+                    <h3>Vehicle Information</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="numVehicles">Number of Vehicles</label>
+                            <input type="number" id="numVehicles" name="numVehicles" min="0" value="1">
+                        </div>
+                        <div class="form-col">
+                            <label for="additionalParking">Need Additional Parking?</label>
+                            <select id="additionalParking" name="additionalParking">
+                                <option value="">Select Option</option>
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <h3>Pet Information</h3>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="hasPets" name="hasPets">
+                        <label for="hasPets">Do you have any pets?</label>
+                    </div>
+                    
+                    <div id="petDetails" style="display: none;">
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="petType">Type of Pet</label>
+                                <input type="text" id="petType" name="petType" placeholder="Dog, Cat, etc.">
+                            </div>
+                            <div class="form-col">
+                                <label for="petBreed">Breed</label>
+                                <input type="text" id="petBreed" name="petBreed" placeholder="Labrador, Siamese, etc.">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="petWeight">Weight (lbs)</label>
+                                <input type="number" id="petWeight" name="petWeight" min="1" placeholder="50">
+                            </div>
+                            <div class="form-col">
+                                <label for="petAge">Age</label>
+                                <input type="number" id="petAge" name="petAge" min="0" placeholder="3">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="hasServiceAnimal" name="hasServiceAnimal">
+                        <label for="hasServiceAnimal">Do you have a service/assistance animal?</label>
+                    </div>
+                    
+                    <h3>Current Residence</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="currentAddress" class="required">Address</label>
+                            <input type="text" id="currentAddress" name="currentAddress" placeholder="456 Oak Avenue" required>
+                            <div class="error-message" id="currentAddressError">Please enter your current address</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="currentCity" class="required">City</label>
+                            <input type="text" id="currentCity" name="currentCity" placeholder="Springfield" required>
+                            <div class="error-message" id="currentCityError">Please enter your current city</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="currentState" class="required">State</label>
+                            <select id="currentState" name="currentState" required>
+                                <option value="">Select State</option>
+                            </select>
+                            <div class="error-message" id="currentStateError">Please select your current state</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="currentZip" class="required">ZIP Code</label>
+                            <input type="text" id="currentZip" name="currentZip" placeholder="12345" required>
+                            <div class="error-message" id="currentZipError">Please enter your current ZIP code</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="currentLandlord" class="required">Landlord/Property Manager Name</label>
+                            <input type="text" id="currentLandlord" name="currentLandlord" placeholder="Robert Johnson" required>
+                            <div class="error-message" id="currentLandlordError">Please enter your landlord's name</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="currentLandlordContact" class="required">Landlord Contact (Phone/Email)</label>
+                            <input type="text" id="currentLandlordContact" name="currentLandlordContact" placeholder="(555) 987-6543 or r.johnson@example.com" required>
+                            <div class="error-message" id="currentLandlordContactError">Please enter your landlord's contact information</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="currentResidenceDates" class="required">Dates of Residence</label>
+                            <input type="text" id="currentResidenceDates" name="currentResidenceDates" placeholder="MM/YYYY - MM/YYYY" required>
+                            <div class="error-message" id="currentResidenceDatesError">Please enter your dates of residence</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="currentRent" class="required">Monthly Rent Amount</label>
+                            <input type="number" id="currentRent" name="currentRent" min="0" placeholder="1500" required>
+                            <div class="error-message" id="currentRentError">Please enter your monthly rent amount</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="currentReasonLeaving" class="required">Reason for Leaving</label>
+                        <textarea id="currentReasonLeaving" name="currentReasonLeaving" rows="2" placeholder="Relocating for work, need more space, etc." maxlength="300" required></textarea>
+                        <div class="character-count" id="currentReasonLeavingCount">0/300 characters</div>
+                        <div class="error-message" id="currentReasonLeavingError">Please provide a reason for leaving</div>
+                    </div>
+                    
+                    <div class="btn-container">
+                        <button type="button" class="btn-prev" onclick="RentalApp.previousSection(2)">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="button" class="btn-next" onclick="RentalApp.nextSection(2)">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Section 3: Employment & Income -->
+                <div class="form-section" id="section3">
+                    <h2><i class="fas fa-briefcase"></i> Employment & Income Information</h2>
+                    
+                    <div class="section-completion">
+                        <i class="fas fa-check-circle" id="section3StatusIcon" style="color: var(--success); display: none;"></i>
+                        <span class="completion-status incomplete" id="section3Status">Incomplete</span>
+                    </div>
+                    
+                    <h3>Current Employment</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="employerName" class="required">Employer Name</label>
+                            <input type="text" id="employerName" name="employerName" placeholder="ABC Corporation" required>
+                            <div class="error-message" id="employerNameError">Please enter your employer's name</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="employerAddress" class="required">Employer Address</label>
+                            <input type="text" id="employerAddress" name="employerAddress" placeholder="789 Business Blvd, Suite 100" required>
+                            <div class="error-message" id="employerAddressError">Please enter your employer's address</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="position" class="required">Position/Title</label>
+                            <input type="text" id="position" name="position" placeholder="Software Engineer" required>
+                            <div class="error-message" id="positionError">Please enter your position/title</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="supervisorName" class="required">Supervisor Name</label>
+                            <input type="text" id="supervisorName" name="supervisorName" placeholder="Sarah Williams" required>
+                            <div class="error-message" id="supervisorNameError">Please enter your supervisor's name</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="supervisorContact" class="required">Supervisor Contact (Phone/Email)</label>
+                            <input type="text" id="supervisorContact" name="supervisorContact" placeholder="(555) 246-8137 or s.williams@abccorp.com" required>
+                            <div class="error-message" id="supervisorContactError">Please enter your supervisor's contact information</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="employmentStart" class="required">Employment Start Date</label>
+                            <input type="date" id="employmentStart" name="employmentStart" required>
+                            <div class="error-message" id="employmentStartError">Please enter your employment start date</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="income" class="required">Monthly/Annual Income</label>
+                            <input type="number" id="income" name="income" min="0" placeholder="5000" required>
+                            <div class="error-message" id="incomeError">Please enter your income</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="incomeType">Income Type</label>
+                            <select id="incomeType" name="incomeType">
+                                <option value="Monthly" selected>Monthly</option>
+                                <option value="Annual">Annual</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="income-ratio" id="incomeRatioDisplay">
+                        <h4>Income-to-Rent Ratio</h4>
+                        <p>Based on your income and the estimated rent, your ratio is: <span class="income-ratio-value" id="incomeRatioValue">--</span></p>
+                        <p class="field-hint">A ratio below 30% is generally considered favorable.</p>
+                    </div>
+                    
+                    <h3>Other Income Sources</h3>
+                    <div class="form-group">
+                        <label for="otherIncome">Please list any other income sources (alimony, child support, investments, social security, etc.)</label>
+                        <textarea id="otherIncome" name="otherIncome" rows="3" placeholder="Child support: $500/month, Investment dividends: $200/month" maxlength="500"></textarea>
+                        <div class="character-count" id="otherIncomeCount">0/500 characters</div>
+                    </div>
+                    
+                    <div class="btn-container">
+                        <button type="button" class="btn-prev" onclick="RentalApp.previousSection(3)">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="button" class="btn-next" onclick="RentalApp.nextSection(3)">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Section 4: Financial & References -->
+                <div class="form-section" id="section4">
+                    <h2><i class="fas fa-file-invoice-dollar"></i> Financial Details & References</h2>
+                    
+                    <div class="section-completion">
+                        <i class="fas fa-check-circle" id="section4StatusIcon" style="color: var(--success); display: none;"></i>
+                        <span class="completion-status incomplete" id="section4Status">Incomplete</span>
+                    </div>
+                    
+                    <h3>Financial Information</h3>
+                    <div class="form-group">
+                        <label for="creditScore">Estimated Credit Score Range</label>
+                            <select id="creditScore" name="creditScore">
+                            <option value="">Select Range</option>
+                            <option value="Excellent (750+)">Excellent (750+)</option>
+                            <option value="Good (700-749)">Good (700-749)</option>
+                            <option value="Fair (650-699)">Fair (650-699)</option>
+                            <option value="Poor (600-649)">Poor (600-649)</option>
+                            <option value="Very Poor (Below 600)">Very Poor (Below 600)</option>
+                            <option value="Unknown">I don't know</option>
+                        </select>
+                    </div>
+                    
+                    <h3>Background Check Authorization</h3>
+                    <div class="legal-section">
+                        <p>I authorize Choice Properties to obtain consumer reports, which may include credit information and criminal background checks, for the purpose of evaluating my tenancy application. I understand that this authorization is valid for the duration of the application process and any resulting tenancy.</p>
+                        
+                        <div class="form-group">
+                            <label for="backgroundCheckSignature" class="required">Signature for Background Check</label>
+                            <input type="text" id="backgroundCheckSignature" name="backgroundCheckSignature" placeholder="Type your full name as signature" required>
+                            <div class="error-message" id="backgroundCheckSignatureError">Please provide your signature for background check authorization</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="backgroundCheckDate" class="required">Date</label>
+                            <input type="date" id="backgroundCheckDate" name="backgroundCheckDate" required>
+                            <div class="error-message" id="backgroundCheckDateError">Please enter the date</div>
+                        </div>
+                    </div>
+                    
+                    <h3>Personal References</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="reference1Name" class="required">Reference 1 Name</label>
+                            <input type="text" id="reference1Name" name="reference1Name" placeholder="Michael Brown" required>
+                            <div class="error-message" id="reference1NameError">Please enter reference name</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="reference1Relationship" class="required">Relationship</label>
+                            <input type="text" id="reference1Relationship" name="reference1Relationship" placeholder="Friend" required>
+                            <div class="error-message" id="reference1RelationshipError">Please enter relationship</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="reference1Phone" class="required">Phone Number</label>
+                            <input type="tel" id="reference1Phone" name="reference1Phone" placeholder="(555) 789-0123" required maxlength="14">
+                            <div class="field-hint">Format: (XXX) XXX-XXXX (10 digits total)</div>
+                            <div class="error-message" id="reference1PhoneError">Please enter a valid 10-digit phone number</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="reference1YearsKnown" class="required">Years Known</label>
+                            <input type="number" id="reference1YearsKnown" name="reference1YearsKnown" min="1" placeholder="5" required>
+                            <div class="error-message" id="reference1YearsKnownError">Please enter years known</div>
+                        </div>
+                    </div>
+                    
+                    <h3>Emergency Contact</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="emergencyName" class="required">Name</label>
+                            <input type="text" id="emergencyName" name="emergencyName" placeholder="David Wilson" required>
+                            <div class="error-message" id="emergencyNameError">Please enter emergency contact name</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="emergencyRelationship" class="required">Relationship</label>
+                            <input type="text" id="emergencyRelationship" name="emergencyRelationship" placeholder="Brother" required>
+                            <div class="error-message" id="emergencyRelationshipError">Please enter relationship</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="emergencyPhone" class="required">Phone Number</label>
+                            <input type="tel" id="emergencyPhone" name="emergencyPhone" placeholder="(555) 321-0987" required maxlength="14">
+                            <div class="field-hint">Format: (XXX) XXX-XXXX (10 digits total)</div>
+                            <div class="error-message" id="emergencyPhoneError">Please enter a valid 10-digit phone number</div>
+                        </div>
+                        <div class="form-col">
+                            <label for="emergencyAddress">Address</label>
+                            <input type="text" id="emergencyAddress" name="emergencyAddress" placeholder="321 Pine Street, Springfield">
+                        </div>
+                    </div>
+                    
+                    <div class="btn-container">
+                        <button type="button" class="btn-prev" onclick="RentalApp.previousSection(4)">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="button" class="btn-next" onclick="RentalApp.nextSection(4)">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Section 5: Review & Submit -->
+                <div class="form-section" id="section5">
+                    <h2><i class="fas fa-clipboard-check"></i> Review & Submit Application</h2>
+                    
+                    <div class="section-completion">
+                        <i class="fas fa-check-circle" id="section5StatusIcon" style="color: var(--success); display: none;"></i>
+                        <span class="completion-status incomplete" id="section5Status">Incomplete</span>
+                    </div>
+                    
+                    <div class="application-id" id="applicationIdDisplay">
+                        Application ID: <span id="applicationIdValue">Not generated yet</span>
+                    </div>
+                    
+                    <div class="summary-section">
+                        <h3>Application Summary</h3>
+                        <div id="applicationSummary"></div>
+                    </div>
+                    
+                    <div class="document-upload-section">
+                        <h3>Required Documentation</h3>
+                        
+                        <div class="form-group">
+                            <label>Photo ID (Required)</label>
+                            <div class="file-upload" id="photoIdUpload">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <div>Click to upload or drag and drop</div>
+                                <div class="field-hint">Driver's license, passport, or state ID (PDF, JPG, or PNG, Max 10MB)</div>
+                            </div>
+                            <input type="file" id="photoId" name="photoId" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                            <div class="file-list" id="photoIdList"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Income Verification (Required)</label>
+                            <div class="file-upload" id="incomeVerificationUpload">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <div>Click to upload or drag and drop</div>
+                                <div class="field-hint">Pay stubs, bank statements, or offer letters (PDF, JPG, or PNG, Max 10MB each)</div>
+                            </div>
+                            <input type="file" id="incomeVerification" name="incomeVerification" accept=".pdf,.jpg,.jpeg,.png" multiple style="display: none;">
+                            <div class="file-list" id="incomeVerificationList"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="legal-section">
+                        <h3><i class="fas fa-gavel"></i> Applicant Certification & Agreement</h3>
+                        <p>By submitting this application, I certify that all information provided is true and complete to the best of my knowledge. I understand that any false or misleading information is grounds for denial of this application or termination of any resulting lease.</p>
+                        <p>I authorize Choice Properties and their agents to verify all information provided, including but not limited to: obtaining my credit report, criminal history, and contacting my current and previous landlords, employers, and references. <strong>I understand that this authorization is made in compliance with the Fair Credit Reporting Act (FCRA).</strong></p>
+                        <p>I acknowledge that an application fee of $50 will be required to process this application.</p>
+                        
+                        <div class="form-group">
+                            <label for="applicantSignature" class="required">Applicant Signature</label>
+                            <input type="text" id="applicantSignature" name="applicantSignature" placeholder="Type your full name as signature" required>
+                            <div class="error-message" id="applicantSignatureError">Please provide your signature</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signatureDate" class="required">Date</label>
+                            <input type="date" id="signatureDate" name="signatureDate" required>
+                            <div class="error-message" id="signatureDateError">Please enter the date</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="feeAcknowledged" name="feeAcknowledged" required>
+                            <label for="feeAcknowledged">I acknowledge that a $50 application fee will be required</label>
+                        </div>
+                        <div class="error-message" id="feeAcknowledgedError">Please acknowledge the application fee</div>
+                    </div>
+                    
+                    <div class="btn-container">
+                        <button type="button" class="btn-prev" onclick="RentalApp.previousSection(5)">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-paper-plane"></i> Submit Application
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <footer>
+            <p>&copy; 2024 Choice Properties. All rights reserved. | Professional Property Management</p>
+            <p class="field-hint">This form uses secure encryption and automatically saves your progress.</p>
+        </footer>
+    </div>
+
+<script src="script.js"></script>
+</body>
+</html>
