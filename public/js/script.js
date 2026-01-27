@@ -1,13 +1,24 @@
 // ============================================================
-// ENHANCED RENTAL APPLICATION MANAGER (FormSubmit Version)
+// ENHANCED RENTAL APPLICATION MANAGER (Supabase Version)
 // ============================================================
 class RentalApplication {
     constructor() {
         this.config = {
             LOCAL_STORAGE_KEY: "choicePropertiesRentalApp",
             AUTO_SAVE_INTERVAL: 30000,
-            MAX_FILE_SIZE: 10 * 1024 * 1024 // 10MB
+            MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
+            SUPABASE_URL: "https://pwqjungiwusflcflukeg.supabase.co/",
+            SUPABASE_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cWp1bmdpd3VzZmxjZmx1a2VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1MDIwODAsImV4cCI6MjA4NTA3ODA4MH0.yq_0LfPc81cq_ptDZGnxbs3RDfhW8PlQaTfYUs_bsLE"
         };
+        
+        // Initialize Supabase if variables are available
+        try {
+            if (typeof supabase !== 'undefined') {
+                this.supabase = supabase.createClient(this.config.SUPABASE_URL, this.config.SUPABASE_KEY);
+            }
+        } catch (e) {
+            console.error('Supabase initialization failed:', e);
+        }
         
         this.state = {
             currentSection: 1,
@@ -213,9 +224,32 @@ class RentalApplication {
             const applicationId = this.generateApplicationId();
             document.getElementById('formApplicationId').value = applicationId;
             
-            this.updateSubmissionProgress(4, 'Submitting application...');
+            this.updateSubmissionProgress(4, 'Submitting application to Choice Properties database...');
             
-            await this.delay(1500);
+            const formData = this.getAllFormData();
+            // Securely remove sensitive/duplicate data before saving
+            delete formData.ssn;
+            delete formData.SSN;
+
+            if (this.supabase) {
+                const { data, error } = await this.supabase
+                    .from('rental_applications')
+                    .insert([
+                        { 
+                            application_id: applicationId,
+                            form_data: formData,
+                            property_address: formData.propertyAddress,
+                            applicant_email: formData.email,
+                            applicant_name: `${formData.firstName} ${formData.lastName}`
+                        }
+                    ]);
+
+                if (error) throw error;
+            } else {
+                console.warn('Supabase not initialized, simulation only');
+                await this.delay(1500);
+            }
+            
             this.handleSubmissionSuccess(applicationId);
             
         } catch (error) {
@@ -229,10 +263,7 @@ class RentalApplication {
         this.hideSubmissionProgress();
         this.showSuccessState(applicationId);
         this.clearSavedProgress();
-        
-        setTimeout(() => {
-            document.getElementById('rentalApplication').submit();
-        }, 2000);
+        // Removed FormSubmit auto-submit logic
     }
     
     handleSubmissionError(error) {

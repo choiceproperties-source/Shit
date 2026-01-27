@@ -6,6 +6,7 @@
     <title>Choice Properties - Enhanced Rental Application</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="container">
@@ -99,11 +100,7 @@
             </div>
         </div>
         
-        <form id="rentalApplication" action="https://formsubmit.co/ajax/your-email@example.com" method="POST" enctype="multipart/form-data">
-            <!-- Hidden configuration for FormSubmit -->
-            <input type="hidden" name="_subject" value="New Choice Properties Rental Application">
-            <input type="hidden" name="_template" value="table">
-            <input type="hidden" name="_captcha" value="false">
+        <form id="rentalApplication" enctype="multipart/form-data">
             <input type="hidden" name="Application ID" id="formApplicationId">
             
             <!-- Step 1: Property & Applicant Details -->
