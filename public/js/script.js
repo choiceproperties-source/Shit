@@ -525,24 +525,44 @@ class RentalApplication {
     }
     
     startAutoSave() {
+        // Debounced save on any input change
+        document.addEventListener('input', this.debounce((e) => {
+            if (e.target.id !== 'ssn') {
+                this.saveProgress();
+            }
+        }, 1000));
+        
+        // Background interval as fallback
         setInterval(() => this.saveProgress(), this.config.AUTO_SAVE_INTERVAL);
     }
     
     saveProgress() {
         const data = this.getAllFormData();
-        // Securely ensure SSN is NOT in localStorage
-        delete data.SSN;
-        delete data.ssn;
+        // SECURE: Explicitly sanitize sensitive data from persistent storage
+        const sensitiveKeys = ['SSN', 'ssn', 'social_security', 'Social Security'];
+        sensitiveKeys.forEach(key => delete data[key]);
         
         localStorage.setItem(this.config.LOCAL_STORAGE_KEY, JSON.stringify(data));
+        this.showAutoSaveIndicator();
+    }
+    
+    showAutoSaveIndicator() {
         const indicator = document.getElementById('autoSaveIndicator');
         if (indicator) {
             indicator.style.display = 'block';
             indicator.style.opacity = '1';
             indicator.textContent = 'Progress saved';
-            setTimeout(() => {
+            
+            // Clear existing timeout if any
+            if (this.state.saveIndicatorTimeout) {
+                clearTimeout(this.state.saveIndicatorTimeout);
+            }
+            
+            this.state.saveIndicatorTimeout = setTimeout(() => {
                 indicator.style.opacity = '0';
-                setTimeout(() => indicator.style.display = 'none', 500);
+                setTimeout(() => {
+                    indicator.style.display = 'none';
+                }, 500);
             }, 2000);
         }
     }
