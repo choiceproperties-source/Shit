@@ -494,6 +494,20 @@ class RentalApplication {
             }
             this.updateFieldFeedback(field, helpText, 'Date selected.', 'valid');
         }
+
+        // Rent vs Income Consistency Check
+        if (field.id === 'monthlyIncome' && value) {
+            const income = parseFloat(value.replace(/[^0-9.]/g, ''));
+            const rent = parseFloat(document.getElementById('rentAmount')?.value.replace(/[^0-9.]/g, '')) || 0;
+            if (income > 0 && rent > 0) {
+                const ratio = income / rent;
+                if (ratio < 2.5) {
+                    this.updateFieldFeedback(field, helpText, 'Warning: Monthly income is less than 2.5x the rent. This may affect approval.', 'invalid');
+                } else {
+                    this.updateFieldFeedback(field, helpText, 'Income meets standard requirements.', 'valid');
+                }
+            }
+        }
         
         this.updateFieldFeedback(field, helpText, '', 'none');
         return true;
@@ -613,7 +627,27 @@ class RentalApplication {
             }));
         }
     }
-    setupCharacterCounters() {}
+    setupCharacterCounters() {
+        const textareas = document.querySelectorAll('textarea');
+        textareas.forEach(textarea => {
+            const parent = textarea.parentElement;
+            const counter = document.createElement('div');
+            counter.className = 'character-count';
+            counter.style.fontSize = '11px';
+            counter.style.textAlign = 'right';
+            counter.style.color = '#7f8c8d';
+            parent.appendChild(counter);
+
+            const updateCounter = () => {
+                const len = textarea.value.length;
+                const max = textarea.getAttribute('maxlength') || 500;
+                counter.textContent = `${len}/${max} characters`;
+            };
+
+            textarea.addEventListener('input', updateCounter);
+            updateCounter();
+        });
+    }
     populateStaticData() {}
     
     restoreSavedProgress() {
