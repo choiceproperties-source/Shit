@@ -64,47 +64,47 @@
             <div class="progress-steps">
                 <div class="progress-step-indicator">
                     <div class="step-indicator active" id="step1Indicator">1</div>
-                    <div>Processing</div>
+                    <div data-i18n="processing">Processing</div>
                 </div>
                 <div class="progress-step-indicator">
                     <div class="step-indicator" id="step2Indicator">2</div>
-                    <div>Validating</div>
+                    <div data-i18n="validating">Validating</div>
                 </div>
                 <div class="progress-step-indicator">
                     <div class="step-indicator" id="step3Indicator">3</div>
-                    <div>Submitting</div>
+                    <div data-i18n="submittingStep">Submitting</div>
                 </div>
                 <div class="progress-step-indicator">
                     <div class="step-indicator" id="step4Indicator">4</div>
-                    <div>Complete</div>
+                    <div data-i18n="complete">Complete</div>
                 </div>
             </div>
-            <h3><i class="fas fa-spinner fa-spin pulse"></i> Submitting Your Application</h3>
-            <p id="submissionMessage">Please don't close this window. This may take a few moments...</p>
+            <h3><i class="fas fa-spinner fa-spin pulse"></i> <span data-i18n="submissionTitle">Submitting Your Application</span></h3>
+            <p id="submissionMessage" data-i18n="submissionHint">Please don't close this window. This may take a few moments...</p>
         </div>
 
         <!-- Success State -->
         <div class="success-state" id="successState">
             <i class="fas fa-check-circle"></i>
-            <h2>Application Submitted Successfully!</h2>
-            <p>Thank you for choosing Choice Properties. Your application has been received and is being processed.</p>
+            <h2 data-i18n="successTitle">Application Submitted Successfully!</h2>
+            <p data-i18n="successText">Thank you for choosing Choice Properties. Your application has been received and is being processed.</p>
             <div class="application-id">
-                Application ID: <strong id="successAppId">---</strong>
+                <span data-i18n="appId">Application ID:</span> <strong id="successAppId">---</strong>
             </div>
             <div style="margin: 25px 0;">
-                <p style="font-weight: bold; margin-bottom: 15px;">What happens next?</p>
+                <p style="font-weight: bold; margin-bottom: 15px;" data-i18n="whatNext">What happens next?</p>
                 <ul style="text-align: left; display: inline-block; margin: 10px 0;">
-                    <li>You'll receive a confirmation email shortly</li>
-                    <li>We'll review your application within 2-3 business days</li>
-                    <li>We may contact you for additional information</li>
+                    <li data-i18n="emailHint">You'll receive a confirmation email shortly</li>
+                    <li data-i18n="reviewHint">We'll review your application within 2-3 business days</li>
+                    <li data-i18n="contactHint">We may contact you for additional information</li>
                 </ul>
             </div>
             <div style="margin-top: 30px;">
                 <button class="btn-submit" onclick="window.print()" style="margin: 8px;">
-                    <i class="fas fa-print"></i> Print Summary
+                    <i class="fas fa-print"></i> <span data-i18n="printBtn">Print Summary</span>
                 </button>
                 <button class="btn-next" onclick="location.reload()" style="margin: 8px;">
-                    <i class="fas fa-plus"></i> New Application
+                    <i class="fas fa-plus"></i> <span data-i18n="newBtn">New Application</span>
                 </button>
             </div>
         </div>

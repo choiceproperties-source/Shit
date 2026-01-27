@@ -22,7 +22,9 @@ def send_email():
     from_email = os.environ.get('SENDGRID_FROM_EMAIL')
     
     if not api_key or not from_email:
-        return jsonify({"error": "SendGrid not configured on server"}), 500
+        lang = request.headers.get('Accept-Language', 'en')
+        error_msg = "SendGrid not configured on server" if lang.startswith('en') else "SendGrid no está configurado en el servidor"
+        return jsonify({"error": error_msg}), 500
 
     message = Mail(
         from_email=from_email,
@@ -34,9 +36,13 @@ def send_email():
     try:
         sg = SendGridAPIClient(api_key)
         response = sg.send(message)
-        return jsonify({"status": "success", "message": "Email sent"}), 200
+        lang = request.headers.get('Accept-Language', 'en')
+        success_msg = "Email sent" if lang.startswith('en') else "Correo electrónico enviado"
+        return jsonify({"status": "success", "message": success_msg}), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        lang = request.headers.get('Accept-Language', 'en')
+        error_prefix = "Error: " if lang.startswith('en') else "Error: "
+        return jsonify({"error": f"{error_prefix}{str(e)}"}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

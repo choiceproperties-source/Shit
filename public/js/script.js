@@ -235,7 +235,26 @@ class RentalApplication {
                 legalCertify: 'Certifico que la información proporcionada en esta solicitud es verdadera y correcta a mi mejor saber y entender. Entiendo que cualquier declaración falsa puede ser motivo de rechazo de esta solicitud o de terminación de cualquier contrato de arrendamiento posterior.',
                 legalAuthorize: 'Autorizo a Choice Properties a verificar la información proporcionada, incluyendo historial crediticio, empleo y referencias. Las verificaciones de antecedentes pueden utilizar proveedores estándar de la industria como TransUnion o Experian donde esté permitido.',
                 termsAgreeLabel: 'Acepto los términos y condiciones',
-                submitBtn: 'Enviar Solicitud'
+                submitBtn: 'Enviar Solicitud',
+                submitting: 'Enviando...',
+                processing: 'Procesando',
+                validating: 'Validando',
+                submittingStep: 'Enviando',
+                complete: 'Completo',
+                submissionTitle: 'Enviando su solicitud',
+                submissionHint: 'Por favor, no cierre esta ventana. Esto puede tomar unos momentos...',
+                successTitle: '¡Solicitud enviada con éxito!',
+                successText: 'Gracias por elegir Choice Properties. Su solicitud ha sido recibida y está siendo procesada.',
+                appId: 'ID de solicitud:',
+                whatNext: '¿Qué sigue?',
+                emailHint: 'Recibirá un correo de confirmación en breve',
+                reviewHint: 'Revisaremos su solicitud en 2-3 días hábiles',
+                contactHint: 'Podemos contactarlo para obtener información adicional',
+                printBtn: 'Imprimir resumen',
+                newBtn: 'Nueva solicitud',
+                errorSendGrid: 'SendGrid no está configurado en el servidor',
+                errorGeneral: 'Ocurrió un error al enviar la solicitud',
+                errorEmailSent: 'Correo electrónico enviado'
             }
         };
 
@@ -265,6 +284,14 @@ class RentalApplication {
                 // Update placeholders and options if needed
                 this.updateBilingualLabels(t);
                 
+                // Update dynamic text in the DOM for non-standard elements
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (t[key]) {
+                        el.textContent = t[key];
+                    }
+                });
+
                 // Update Headers
                 document.querySelector('#section1 h2').innerHTML = `<i class="fas fa-home"></i> ${t.propertyHeader}`;
                 document.querySelector('#section2 h2').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${t.residencyHeader}`;
