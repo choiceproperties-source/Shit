@@ -107,7 +107,7 @@
             <input type="hidden" name="Application ID" id="formApplicationId">
             
             <!-- Step 1: Property & Applicant Details -->
-            <div class="form-section" id="section1">
+            <div class="form-section active" id="section1">
                 <h2><i class="fas fa-home"></i> Property & Applicant Details</h2>
                 
                 <div class="required-note"><i class="fas fa-info-circle"></i> Fields marked with * are required</div>
@@ -116,7 +116,7 @@
                 <div class="form-group">
                     <label class="required" for="propertyAddress">Property Address Applying For</label>
                     <input type="text" id="propertyAddress" name="Property Address" required placeholder="Street address, city, state, zip">
-                    <div class="error-message">Please enter the property address</div>
+                    <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Please enter the property address</div>
                 </div>
                 
                 <div class="form-row">
@@ -124,6 +124,7 @@
                         <div class="form-group">
                             <label class="required" for="requestedMoveIn">Requested Move-in Date</label>
                             <input type="date" id="requestedMoveIn" name="Requested Move-in Date" required>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
@@ -137,6 +138,7 @@
                                 <option value="Month-to-month">Month-to-month</option>
                                 <option value="Other">Other</option>
                             </select>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                 </div>
@@ -147,12 +149,14 @@
                         <div class="form-group">
                             <label class="required" for="firstName">First Name</label>
                             <input type="text" id="firstName" name="First Name" required>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
                             <label class="required" for="lastName">Last Name</label>
                             <input type="text" id="lastName" name="Last Name" required>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                 </div>
@@ -162,12 +166,14 @@
                         <div class="form-group">
                             <label class="required" for="email">Email Address</label>
                             <input type="email" id="email" name="Email" required placeholder="email@example.com">
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Invalid email</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
                             <label class="required" for="phone">Phone Number</label>
                             <input type="tel" id="phone" name="Phone" required placeholder="(555) 000-0000">
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Invalid phone</div>
                         </div>
                     </div>
                 </div>
@@ -177,6 +183,7 @@
                         <div class="form-group">
                             <label class="required" for="dob">Date of Birth</label>
                             <input type="date" id="dob" name="DOB" required>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
@@ -205,6 +212,7 @@
                 <div class="form-group">
                     <label class="required" for="currentAddress">Current Address</label>
                     <input type="text" id="currentAddress" name="Current Address" required placeholder="Street, Unit #, City, State, Zip">
+                    <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                 </div>
                 
                 <div class="form-row">
@@ -212,12 +220,14 @@
                         <div class="form-group">
                             <label class="required" for="residencyStart">How long at this address?</label>
                             <input type="text" id="residencyStart" name="Residency Duration" required placeholder="e.g., 2 years 3 months">
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
                             <label class="required" for="rentAmount">Current Rent/Mortgage Amount</label>
                             <input type="text" id="rentAmount" name="Current Rent Amount" required placeholder="$">
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                 </div>
@@ -225,6 +235,7 @@
                 <div class="form-group">
                     <label class="required" for="reasonLeaving">Reason for leaving</label>
                     <textarea id="reasonLeaving" name="Reason for leaving" required rows="2"></textarea>
+                    <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                 </div>
                 
                 <div class="form-row">
@@ -232,12 +243,14 @@
                         <div class="form-group">
                             <label class="required" for="landlordName">Current Landlord Name</label>
                             <input type="text" id="landlordName" name="Current Landlord Name" required>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
                             <label class="required" for="landlordPhone">Landlord Phone</label>
                             <input type="tel" id="landlordPhone" name="Landlord Phone" required>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                 </div>
@@ -292,12 +305,14 @@
                                 <option value="Retired">Retired</option>
                                 <option value="Unemployed">Unemployed</option>
                             </select>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
                             <label class="required" for="employer">Current Employer</label>
                             <input type="text" id="employer" name="Employer" required>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                 </div>
@@ -307,12 +322,14 @@
                         <div class="form-group">
                             <label class="required" for="jobTitle">Job Title</label>
                             <input type="text" id="jobTitle" name="Job Title" required>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
                             <label class="required" for="employmentDuration">How long at this job?</label>
                             <input type="text" id="employmentDuration" name="Employment Duration" required placeholder="e.g., 3 years">
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                 </div>
@@ -322,12 +339,14 @@
                         <div class="form-group">
                             <label class="required" for="supervisorName">Supervisor Name</label>
                             <input type="text" id="supervisorName" name="Supervisor Name" required>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
                             <label class="required" for="supervisorPhone">Supervisor Phone</label>
                             <input type="tel" id="supervisorPhone" name="Supervisor Phone" required>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                 </div>
@@ -339,6 +358,7 @@
                             <label class="required" for="monthlyIncome">Gross Monthly Income</label>
                             <input type="text" id="monthlyIncome" name="Monthly Income" required placeholder="$">
                             <div class="field-hint">Before taxes and deductions</div>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
@@ -374,12 +394,14 @@
                         <div class="form-group">
                             <label class="required" for="ref1Name">Reference 1 Name</label>
                             <input type="text" id="ref1Name" name="Reference 1 Name" required>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
                             <label class="required" for="ref1Phone">Reference 1 Phone</label>
                             <input type="tel" id="ref1Phone" name="Reference 1 Phone" required>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                 </div>
@@ -389,12 +411,14 @@
                         <div class="form-group">
                             <label class="required" for="ref2Name">Reference 2 Name</label>
                             <input type="text" id="ref2Name" name="Reference 2 Name" required>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
                             <label class="required" for="ref2Phone">Reference 2 Phone</label>
                             <input type="tel" id="ref2Phone" name="Reference 2 Phone" required>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                 </div>
@@ -405,12 +429,14 @@
                         <div class="form-group">
                             <label class="required" for="emergencyName">Name</label>
                             <input type="text" id="emergencyName" name="Emergency Contact Name" required>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                     <div class="form-col">
                         <div class="form-group">
                             <label class="required" for="emergencyPhone">Phone Number</label>
                             <input type="tel" id="emergencyPhone" name="Emergency Contact Phone" required>
+                            <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                         </div>
                     </div>
                 </div>
@@ -477,6 +503,7 @@
                     <div class="checkbox-group">
                         <input type="checkbox" id="termsAgree" name="Terms Agreement" required>
                         <label class="required" for="termsAgree">I agree to the terms and conditions</label>
+                        <div class="error-message" style="display:none; color: var(--danger); font-size: 14px;">Required</div>
                     </div>
                 </div>
                 
