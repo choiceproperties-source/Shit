@@ -1,129 +1,19 @@
 import os
-import uuid
-from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-
-class Base(DeclarativeBase):
-    pass
-
-db = SQLAlchemy(model_class=Base)
 
 app = Flask(__name__, static_folder='../public')
 CORS(app)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
-app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-    "pool_recycle": 300,
-    "pool_pre_ping": True,
-}
-db.init_app(app)
-
-from sqlalchemy.orm import Mapped, mapped_column
-
-class Application(db.Model):
-    __tablename__ = "applications"
-    id: Mapped[int] = mapped_column(primary_key=True)
-    app_id: Mapped[str] = mapped_column(db.String(20), unique=True, nullable=False)
-    first_name: Mapped[str] = mapped_column(db.String(100), nullable=False)
-    last_name: Mapped[str] = mapped_column(db.String(100), nullable=False)
-    email: Mapped[str] = mapped_column(db.String(120), nullable=False)
-    property_address: Mapped[str] = mapped_column(db.String(255), nullable=False)
-    application_status: Mapped[str] = mapped_column(db.String(50), default="awaiting_payment")
-    payment_status: Mapped[str] = mapped_column(db.String(50), default="pending")
-    payment_marked_by: Mapped[str | None] = mapped_column(db.String(100))
-    payment_marked_at: Mapped[datetime | None] = mapped_column(db.DateTime)
-    payment_note: Mapped[str | None] = mapped_column(db.Text)
-    created_at: Mapped[datetime] = mapped_column(db.DateTime, default=datetime.utcnow)
-    data: Mapped[dict | None] = mapped_column(db.JSON)
-
-with app.app_context():
-    db.create_all()
-
 @app.route('/')
 def serve_index():
-    if not app.static_folder:
-        return "Static folder not found", 500
     return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/<path:path>')
 def serve_static(path):
-    if not app.static_folder:
-        return "Static folder not found", 500
     return send_from_directory(app.static_folder, path)
-
-@app.route('/api/applications/status', methods=['POST'])
-def get_application_status():
-    data = request.json
-    app_id = data.get('app_id')
-    email = data.get('email')
-    
-    application = Application.query.filter_by(app_id=app_id, email=email).first()
-    if not application:
-        return jsonify({"error": "Application not found"}), 404
-        
-    return jsonify({
-        "app_id": application.app_id,
-        "application_status": application.application_status,
-        "payment_status": application.payment_status,
-        "first_name": application.first_name,
-        "last_name": application.last_name
-    })
-
-@app.route('/api/applications', methods=['POST'])
-def submit_application():
-    data = request.json
-    app_id = 'APP-' + str(uuid.uuid4())[:8].upper()
-    
-    new_app = Application(
-        app_id=app_id,
-        first_name=data.get('firstName'),
-        last_name=data.get('lastName'),
-        email=data.get('email'),
-        property_address=data.get('propertyAddress'),
-        data=data
-    )
-    
-    db.session.add(new_app)
-    db.session.commit()
-    
-    # Send email trigger
-    send_initial_email(new_app.email, app_id)
-    
-    return jsonify({"status": "success", "app_id": app_id}), 201
-
-def send_initial_email(to_email, app_id):
-    api_key = os.environ.get('SENDGRID_API_KEY')
-    from_email = os.environ.get('SENDGRID_FROM_EMAIL')
-    
-    if not api_key or not from_email:
-        return
-        
-    subject = "Application Received – Payment Required to Proceed"
-    content = f"""
-    <h3>Application Received Successfully</h3>
-    <p>Your unique Application ID is: <b>{app_id}</b></p>
-    <p>An application fee is required before our team can begin the review process.</p>
-    <p>Please note that payment is made outside of this system. Once your payment is confirmed by our staff, your application status will be updated.</p>
-    <p>You can track your status on the applicant dashboard.</p>
-    """
-    
-    message = Mail(
-        from_email=from_email,
-        to_emails=to_email,
-        subject=subject,
-        html_content=content
-    )
-    
-    try:
-        sg = SendGridAPIClient(api_key)
-        sg.send(message)
-    except Exception as e:
-        print(f"Error sending email: {e}")
 
 @app.route('/api/send-email', methods=['POST'])
 def send_email():
