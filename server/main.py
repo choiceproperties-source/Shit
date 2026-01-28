@@ -272,10 +272,10 @@ def _send_admin_notification(form_data, application_id):
     
     # Support multiple admin emails via comma-separated secret or list
     admin_emails_raw = os.environ.get('ADMIN_NOTIFICATION_EMAIL')
-    if admin_emails_raw is None:
+    if not admin_emails_raw:
         admin_emails_raw = from_email
     
-    admin_emails = [e.strip() for e in admin_emails_raw.split(',') if e.strip()]
+    admin_emails = [e.strip() for e in str(admin_emails_raw).split(',') if e.strip()]
     
     if not api_key or not from_email or not admin_emails: return
 

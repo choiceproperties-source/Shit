@@ -968,7 +968,7 @@ class RentalApplication {
     
     generateApplicationId() {
         if (!this.state.applicationId) {
-            this.state.applicationId = 'APP-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            this.state.applicationId = 'CP-' + Math.random().toString(36).substr(2, 6).toUpperCase();
         }
         const display = document.getElementById('successAppId');
         if (display) display.textContent = this.state.applicationId;
