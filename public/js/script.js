@@ -647,10 +647,13 @@ class RentalApplication {
             }
         }
         
-        if (!confirm('Ready to submit your application? You will receive a confirmation email shortly.')) {
-            return;
+        // Show loading state on button
+        const submitBtn = document.getElementById('mainSubmitBtn');
+        if (submitBtn) {
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
         }
-        
+
         this.setState({ isSubmitting: true });
         this.showSubmissionProgress();
         
