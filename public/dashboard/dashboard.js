@@ -118,9 +118,29 @@ class ApplicantDashboard {
     }
 
     async fetchApplicationStatus() {
-        const response = await fetch(`/api/application-status/${this.appId}`);
-        if (!response.ok) return null;
-        return await response.json();
+        // Updated to use Supabase as requested
+        if (typeof supabase === 'undefined') {
+            console.error('Supabase not loaded');
+            return null;
+        }
+        
+        const config = {
+            URL: "https://pwqjungiwusflcflukeg.supabase.co/",
+            KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cWp1bmdpd3VzZmxjZmx1a2VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1MDIwODAsImV4cCI6MjA4NTA3ODA4MH0.yq_0LfPc81cq_ptDZGnxbs3RDfhW8PlQaTfYUs_bsLE"
+        };
+        
+        const client = supabase.createClient(config.URL, config.KEY);
+        const { data, error } = await client
+            .from('rental_applications')
+            .select('*')
+            .eq('application_id', this.appId)
+            .single();
+            
+        if (error) {
+            console.error('Supabase fetch error:', error);
+            return null;
+        }
+        return data;
     }
 
     renderDashboard(app) {

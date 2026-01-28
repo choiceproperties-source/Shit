@@ -27,11 +27,21 @@ class AdminList {
         }
 
         try {
-            const response = await fetch('/api/admin/applications');
-            const apps = await response.json();
-            this.renderTable(apps);
+            // Using Supabase as requested
+            const config = {
+                URL: "https://pwqjungiwusflcflukeg.supabase.co/",
+                KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cWp1bmdpd3VzZmxjZmx1a2VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1MDIwODAsImV4cCI6MjA4NTA3ODA4MH0.yq_0LfPc81cq_ptDZGnxbs3RDfhW8PlQaTfYUs_bsLE"
+            };
+            const client = supabase.createClient(config.URL, config.KEY);
+            const { data, error } = await client
+                .from('rental_applications')
+                .select('*')
+                .order('created_at', { ascending: false });
+                
+            if (error) throw error;
+            this.renderTable(data);
         } catch (err) {
-            console.error(err);
+            console.error('Supabase admin fetch error:', err);
         }
     }
 
@@ -61,12 +71,21 @@ class AdminDetail {
     async init() {
         if (!this.appId) return;
         try {
-            const response = await fetch(`/api/application-status/${this.appId}`);
-            const fullApp = await fetch(`/api/admin/application/${this.appId}`);
-            const data = await fullApp.json();
+            const config = {
+                URL: "https://pwqjungiwusflcflukeg.supabase.co/",
+                KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cWp1bmdpd3VzZmxjZmx1a2VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1MDIwODAsImV4cCI6MjA4NTA3ODA4MH0.yq_0LfPc81cq_ptDZGnxbs3RDfhW8PlQaTfYUs_bsLE"
+            };
+            const client = supabase.createClient(config.URL, config.KEY);
+            const { data, error } = await client
+                .from('rental_applications')
+                .select('*')
+                .eq('application_id', this.appId)
+                .single();
+                
+            if (error) throw error;
             this.render(data);
         } catch (err) {
-            console.error(err);
+            console.error('Supabase admin detail error:', err);
         }
     }
 

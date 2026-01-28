@@ -676,27 +676,34 @@ class RentalApplication {
             delete formData.ssn;
             delete formData.SSN;
 
-            // NEW: Submit to our Flask backend API
-            const response = await fetch('/api/submit-application', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept-Language': this.state.language || 'en'
-                },
-                body: JSON.stringify(formData)
-            });
+            const applicationId = this.generateApplicationId();
+            
+            if (this.supabase) {
+                const { data, error } = await this.supabase
+                    .from('rental_applications')
+                    .insert([
+                        { 
+                            application_id: applicationId,
+                            form_data: formData,
+                            property_address: formData.propertyAddress,
+                            applicant_email: formData.email,
+                            applicant_name: `${formData.firstName} ${formData.lastName}`
+                        }
+                    ]);
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to submit application to server');
+                if (error) throw error;
+            } else {
+                throw new Error('Database service not initialized');
             }
-
-            const result = await response.json();
-            const finalApplicationId = result.application_id;
             
-            this.handleSubmissionSuccess(finalApplicationId);
+            this.handleSubmissionSuccess(applicationId);
             
-            // Note: Email is handled by backend now
+            // Send notification to admin and confirmation to applicant
+            fetch('/api/submit-application-legacy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...formData, applicationId })
+            }).catch(err => console.error('Notification error:', err));
             
         } catch (error) {
             console.error('Submission error:', error);

@@ -26,47 +26,20 @@ def serve_admin():
 def serve_static(path):
     return send_from_directory('../public', path)
 
-@app.route('/api/submit-application', methods=['POST'])
-def submit_application():
+@app.route('/api/submit-application-legacy', methods=['POST'])
+def submit_application_legacy():
     try:
         data = request.json
         applicant_email = data.get('email')
-        # ... logic ...
+        application_id = data.get('applicationId')
         applicant_name = f"{data.get('firstName', '')} {data.get('lastName', '')}".strip()
-        lang = request.headers.get('Accept-Language', 'en').startswith('es') and 'es' or 'en'
         
-        if not applicant_email:
-            return jsonify({'error': 'Email is required'}), 400
-        
-        # Generate unique application_id
-        application_id = Application.generate_application_id()
-        
-        # Create application record with statuses set as required
-        app_record = Application()
-        app_record.application_id = application_id
-        app_record.applicant_email = applicant_email
-        app_record.applicant_name = applicant_name
-        app_record.application_status = 'awaiting_payment'
-        app_record.payment_status = 'pending'
-        app_record.form_data = data
-        
-        db.session.add(app_record)
-        db.session.commit()
-        
-        # Send confirmation email to applicant
-        _send_confirmation_email(applicant_email, applicant_name, application_id, lang)
-        
-        # Notify Admin
+        # Send notifications using backend logic
+        _send_confirmation_email(applicant_email, applicant_name, application_id)
         _send_admin_notification(data, application_id)
         
-        return jsonify({
-            'status': 'success',
-            'application_id': application_id,
-            'message': 'Application received successfully' if lang == 'en' else 'Solicitud recibida exitosamente'
-        }), 201
-        
+        return jsonify({'status': 'success'}), 200
     except Exception as e:
-        db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
 def _get_email_template(title, content, lang='en'):
