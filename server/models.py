@@ -20,4 +20,4 @@ class Application(db.Model):
     
     @staticmethod
     def generate_application_id():
-        return f'APP-{uuid.uuid4().hex[:12].upper()}'
+        return f'CP-{uuid.uuid4().hex[:8].upper()}'

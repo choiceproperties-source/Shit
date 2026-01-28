@@ -29,8 +29,13 @@ class ApplicantDashboard {
     setupLogin() {
         if (this.elements.viewStatusBtn) {
             this.elements.viewStatusBtn.addEventListener('click', () => {
-                const id = this.elements.loginAppId.value.trim();
+                const id = this.elements.loginAppId.value.trim().toUpperCase();
                 if (id) {
+                    if (!id.startsWith('CP-')) {
+                        this.elements.loginError.textContent = 'IDs must start with CP-';
+                        this.elements.loginError.classList.remove('hidden');
+                        return;
+                    }
                     window.location.search = `?id=${id}`;
                 }
             });
