@@ -12,6 +12,16 @@ CORS(app)
 def serve_index():
     return send_from_directory('../public', 'index.html')
 
+@app.route('/dashboard')
+@app.route('/dashboard/')
+def serve_dashboard():
+    return send_from_directory('../public/dashboard', 'index.html')
+
+@app.route('/admin')
+@app.route('/admin/')
+def serve_admin():
+    return send_from_directory('../public/admin', 'index.html')
+
 @app.route('/<path:path>')
 def serve_static(path):
     return send_from_directory('../public', path)
