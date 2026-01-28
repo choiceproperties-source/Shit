@@ -989,17 +989,18 @@ class RentalApplication {
         });
 
         // Group the data for a cleaner summary
-        const groups = {
-            'Property & Applicant': ['Property Address', 'Requested Move-in Date', 'Desired Lease Term', 'First Name', 'Last Name', 'Email', 'Phone', 'DOB'],
-            'Residency': ['Current Address', 'Residency Duration', 'Current Rent Amount', 'Reason for leaving', 'Current Landlord Name', 'Landlord Phone'],
-            'Occupancy': ['Total Occupants', 'Additional Occupants', 'Has Pets', 'Pet Details'],
-            'Employment & Income': ['Employment Status', 'Employer', 'Job Title', 'Employment Duration', 'Supervisor Name', 'Supervisor Phone', 'Monthly Income', 'Other Income']
-        };
+        const groups = [
+            { id: 1, name: 'Property & Applicant', fields: ['Property Address', 'Requested Move-in Date', 'Desired Lease Term', 'First Name', 'Last Name', 'Email', 'Phone', 'DOB'] },
+            { id: 2, name: 'Residency', fields: ['Current Address', 'Residency Duration', 'Current Rent Amount', 'Reason for leaving', 'Current Landlord Name', 'Landlord Phone'] },
+            { id: 2, name: 'Occupancy', fields: ['Total Occupants', 'Additional Occupants', 'Has Pets', 'Pet Details'] },
+            { id: 3, name: 'Employment & Income', fields: ['Employment Status', 'Employer', 'Job Title', 'Employment Duration', 'Supervisor Name', 'Supervisor Phone', 'Monthly Income', 'Other Income'] },
+            { id: 4, name: 'Financial & References', fields: ['Bank Name', 'Account Type', 'Emergency Contact Name', 'Emergency Contact Phone', 'Personal Reference 1', 'Reference 1 Phone', 'Personal Reference 2', 'Reference 2 Phone'] }
+        ];
 
         let summaryHtml = '';
-        for (const [groupName, fields] of Object.entries(groups)) {
+        groups.forEach(group => {
             let groupFieldsHtml = '';
-            fields.forEach(field => {
+            group.fields.forEach(field => {
                 const value = data[field];
                 if (value) {
                     groupFieldsHtml += `
@@ -1014,17 +1015,25 @@ class RentalApplication {
                 summaryHtml += `
                     <div class="summary-group">
                         <div class="summary-header">
-                            <span>${groupName}</span>
-                            <i class="fas fa-check-circle" style="color: var(--success); font-size: 14px;"></i>
+                            <span>${group.name}</span>
+                            <button type="button" class="btn-text" onclick="window.app.goToSection(${group.id})" style="font-size: 12px; color: var(--secondary); padding: 4px 8px;">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
                         </div>
                         <div class="summary-content">
                             ${groupFieldsHtml}
                         </div>
                     </div>`;
             }
-        }
+        });
 
         summaryContainer.innerHTML = summaryHtml;
+    }
+
+    goToSection(sectionNumber) {
+        this.hideSection(this.getCurrentSection());
+        this.showSection(sectionNumber);
+        this.updateProgressBar();
     }
     
     getAllFormData() {
