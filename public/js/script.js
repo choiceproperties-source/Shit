@@ -666,8 +666,8 @@ class RentalApplication {
             
             this.updateSubmissionProgress(3, 'Preparing submission...');
             
-            const applicationId = this.generateApplicationId();
-            document.getElementById('formApplicationId').value = applicationId;
+            const applicationIdPlaceholder = this.generateApplicationId();
+            document.getElementById('formApplicationId').value = applicationIdPlaceholder;
             
             this.updateSubmissionProgress(4, 'Submitting application to Choice Properties database...');
             
@@ -676,33 +676,39 @@ class RentalApplication {
             delete formData.ssn;
             delete formData.SSN;
 
-            if (this.supabase) {
-                const { data, error } = await this.supabase
-                    .from('rental_applications')
-                    .insert([
-                        { 
-                            application_id: applicationId,
-                            form_data: formData,
-                            property_address: formData.propertyAddress,
-                            applicant_email: formData.email,
-                            applicant_name: `${formData.firstName} ${formData.lastName}`
-                        }
-                    ]);
+            // NEW: Submit to our Flask backend API
+            const response = await fetch('/api/submit-application', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept-Language': this.state.language || 'en'
+                },
+                body: JSON.stringify(formData)
+            });
 
-                if (error) throw error;
-            } else {
-                console.warn('Supabase not initialized, simulation only');
-                await this.delay(1500);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to submit application to server');
             }
+
+            const result = await response.json();
+            const finalApplicationId = result.application_id;
             
-            this.handleSubmissionSuccess(applicationId);
+            this.handleSubmissionSuccess(finalApplicationId);
             
-            // Send confirmation email via our new backend API
-            this.sendConfirmationEmail(formData);
+            // Note: Email is handled by backend now
             
         } catch (error) {
             console.error('Submission error:', error);
-            this.handleSubmissionError(error);
+            // Hide loading state on button
+            const submitBtn = document.getElementById('mainSubmitBtn');
+            if (submitBtn) {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }
+            this.setState({ isSubmitting: false });
+            this.hideSubmissionProgress();
+            alert(`Submission failed: ${error.message}`);
         }
     }
     
