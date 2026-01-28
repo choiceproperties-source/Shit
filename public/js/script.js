@@ -1162,7 +1162,29 @@ class RentalApplication {
     
     showSubmissionProgress() { this.showElement('submissionProgress'); this.hideSection(this.getCurrentSection()); }
     hideSubmissionProgress() { this.hideElement('submissionProgress'); }
-    showSuccessState(appId) { this.showElement('successState'); const el = document.getElementById('successAppId'); if (el) el.textContent = appId; }
+    showSuccessState(appId) {
+        this.showElement('successState');
+        const el = document.getElementById('successAppId');
+        if (el) el.textContent = appId;
+        
+        // QR Code Generation
+        const qrContainer = document.getElementById('qrcode');
+        if (qrContainer && typeof QRCode !== 'undefined') {
+            qrContainer.innerHTML = '';
+            try {
+                new QRCode(qrContainer, {
+                    text: `${window.location.origin}/dashboard/?id=${appId}`,
+                    width: 120,
+                    height: 120,
+                    colorDark : "#2563eb",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+            } catch (err) {
+                console.error('QR generation failed:', err);
+            }
+        }
+    }
     clearSavedProgress() { localStorage.removeItem(this.config.LOCAL_STORAGE_KEY); }
 }
 
