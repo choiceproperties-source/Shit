@@ -522,6 +522,7 @@ class RentalApplication {
         if (ssnEl) {
             ssnEl.addEventListener('input', (e) => {
                 let val = e.target.value.replace(/\D/g, '');
+                if (val.length > 9) val = val.substring(0, 9);
                 let formatted = '';
                 if (val.length > 0) formatted += val.substr(0, 3);
                 if (val.length > 3) formatted += '-' + val.substr(3, 2);
@@ -1060,6 +1061,7 @@ class RentalApplication {
     saveProgress() {
         const data = this.getAllFormData();
         // SECURE: Explicitly sanitize sensitive data from persistent storage
+        // SSN is only kept in memory during the session, never written to disk
         const sensitiveKeys = ['SSN', 'ssn', 'social_security', 'Social Security'];
         sensitiveKeys.forEach(key => delete data[key]);
         

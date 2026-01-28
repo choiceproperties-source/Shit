@@ -99,20 +99,32 @@ class AdminDetail {
     renderData(formData) {
         const infoGrid = document.getElementById('applicantInfo');
         const mainFields = ['firstName', 'lastName', 'email', 'phone', 'dob', 'ssn'];
-        infoGrid.innerHTML = mainFields.map(key => `
-            <div class="data-item">
-                <span class="data-label">${this.formatKey(key)}</span>
-                <span class="data-value">${formData[key] || 'N/A'}</span>
-            </div>
-        `).join('');
+        infoGrid.innerHTML = mainFields.map(key => {
+            let value = formData[key] || 'N/A';
+            if (key === 'ssn' && value !== 'N/A') {
+                value = '###-##-' + value.split('-').pop();
+            }
+            return `
+                <div class="data-item">
+                    <span class="data-label">${this.formatKey(key)}</span>
+                    <span class="data-value">${value}</span>
+                </div>
+            `;
+        }).join('');
 
         const fullGrid = document.getElementById('fullData');
-        fullGrid.innerHTML = Object.keys(formData).map(key => `
-            <div class="data-item">
-                <span class="data-label">${this.formatKey(key)}</span>
-                <span class="data-value">${formData[key] || 'N/A'}</span>
-            </div>
-        `).join('');
+        fullGrid.innerHTML = Object.keys(formData).map(key => {
+            let value = formData[key] || 'N/A';
+            if (key === 'ssn' && value !== 'N/A') {
+                value = '###-##-' + value.split('-').pop();
+            }
+            return `
+                <div class="data-item">
+                    <span class="data-label">${this.formatKey(key)}</span>
+                    <span class="data-value">${value}</span>
+                </div>
+            `;
+        }).join('');
     }
 
     formatKey(key) {
