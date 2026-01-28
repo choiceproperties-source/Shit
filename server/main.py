@@ -164,5 +164,24 @@ def send_email():
         error_prefix = "Error: " if lang.startswith('en') else "Error: "
         return jsonify({"error": f"{error_prefix}{str(e)}"}), 500
 
+@app.route('/api/application-status/<app_id>')
+def get_application_status(app_id):
+    try:
+        app_record = Application.query.filter_by(application_id=app_id).first()
+        if not app_record:
+            return jsonify({'error': 'Application not found'}), 404
+            
+        return jsonify({
+            'application_id': app_record.application_id,
+            'applicant_name': app_record.applicant_name,
+            'applicant_email': app_record.applicant_email,
+            'property_address': app_record.form_data.get('propertyAddress', 'Property Application') if app_record.form_data else 'Property Application',
+            'application_status': app_record.application_status,
+            'payment_status': app_record.payment_status,
+            'created_at': app_record.created_at.isoformat()
+        }), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
