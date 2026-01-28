@@ -216,54 +216,7 @@ def admin_get_application(app_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/admin/application/<app_id>/payment', methods=['POST'])
-def admin_update_payment(app_id):
-    try:
-        app_record = Application.query.filter_by(application_id=app_id).first()
-        if not app_record: return jsonify({'error': 'Not found'}), 404
-        
-        status = request.json.get('status')
-        if status == 'paid':
-            app_record.payment_status = 'paid'
-            app_record.application_status = 'under_review'
-            db.session.commit()
-            
-            # Trigger Email
-            _send_status_update_email(
-                app_record.applicant_email, 
-                app_record.applicant_name, 
-                'under_review', 
-                app_id,
-                is_payment_confirmation=True
-            )
-            
-        return jsonify({'status': 'success'}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/admin/application/<app_id>/status', methods=['POST'])
-def admin_update_status(app_id):
-    try:
-        app_record = Application.query.filter_by(application_id=app_id).first()
-        if not app_record: return jsonify({'error': 'Not found'}), 404
-        
-        status = request.json.get('status')
-        app_record.application_status = status
-        db.session.commit()
-        
-        # Trigger Email
-        _send_status_update_email(
-            app_record.applicant_email, 
-            app_record.applicant_name, 
-            status, 
-            app_id
-        )
-        
-        return jsonify({'status': 'success'}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-def _send_status_update_email(to_email, name, status, app_id, is_payment_confirmation=False):
+def sendStatusChangeEmail(to_email, name, status, app_id, is_payment_confirmation=False):
     api_key = os.environ.get('SENDGRID_API_KEY')
     from_email = os.environ.get('SENDGRID_FROM_EMAIL')
     if not api_key or not from_email: return
@@ -288,6 +241,53 @@ def _send_status_update_email(to_email, name, status, app_id, is_payment_confirm
         SendGridAPIClient(api_key).send(message)
     except Exception as e:
         print(f"Email fail: {e}")
+
+@app.route('/api/admin/application/<app_id>/payment', methods=['POST'])
+def admin_update_payment(app_id):
+    try:
+        app_record = Application.query.filter_by(application_id=app_id).first()
+        if not app_record: return jsonify({'error': 'Not found'}), 404
+        
+        status = request.json.get('status')
+        if status == 'paid':
+            app_record.payment_status = 'paid'
+            app_record.application_status = 'under_review'
+            db.session.commit()
+            
+            # Trigger Email helper
+            sendStatusChangeEmail(
+                app_record.applicant_email, 
+                app_record.applicant_name, 
+                'under_review', 
+                app_id,
+                is_payment_confirmation=True
+            )
+            
+        return jsonify({'status': 'success'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/application/<app_id>/status', methods=['POST'])
+def admin_update_status(app_id):
+    try:
+        app_record = Application.query.filter_by(application_id=app_id).first()
+        if not app_record: return jsonify({'error': 'Not found'}), 404
+        
+        status = request.json.get('status')
+        app_record.application_status = status
+        db.session.commit()
+        
+        # Trigger Email helper
+        sendStatusChangeEmail(
+            app_record.applicant_email, 
+            app_record.applicant_name, 
+            status, 
+            app_id
+        )
+        
+        return jsonify({'status': 'success'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
