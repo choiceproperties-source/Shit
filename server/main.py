@@ -66,165 +66,90 @@ def submit_application():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
+def _get_email_template(title, content, lang='en'):
+    primary_color = "#1a5276"
+    secondary_color = "#3498db"
+    accent_color = "#e67e22"
+    
+    footer_en = "Choice Properties Management. Professional Property Management Solutions."
+    footer_es = "Gestión de Choice Properties. Soluciones Profesionales de Gestión de Propiedades."
+    footer = footer_es if lang == 'es' else footer_en
+    
+    return f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            body {{ font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }}
+            .wrapper {{ background-color: #f5f7fa; padding: 40px 20px; }}
+            .container {{ max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }}
+            .header {{ background: linear-gradient(135deg, {primary_color}, {secondary_color}); color: #ffffff; padding: 30px; text-align: center; }}
+            .logo {{ font-size: 24px; font-weight: bold; margin-bottom: 5px; }}
+            .content {{ padding: 30px; }}
+            .footer {{ background: #f8f9fa; color: #7f8c8d; padding: 20px; text-align: center; font-size: 12px; border-top: 1px solid #eee; }}
+            .button {{ display: inline-block; padding: 12px 25px; background: {accent_color}; color: #ffffff !important; text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 20px; }}
+            .id-box {{ background: #e8f4fc; border-left: 4px solid {secondary_color}; padding: 15px; margin: 20px 0; font-family: monospace; font-size: 18px; }}
+            h2 {{ color: {primary_color}; margin-top: 0; }}
+            .highlight {{ color: {accent_color}; font-weight: bold; }}
+        </style>
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="container">
+                <div class="header">
+                    <div class="logo">CHOICE PROPERTIES</div>
+                    <div style="font-size: 14px; opacity: 0.9;">{title}</div>
+                </div>
+                <div class="content">
+                    {content}
+                </div>
+                <div class="footer">
+                    <p>{footer}</p>
+                    <p>&copy; 2026 Choice Properties. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
 def _send_confirmation_email(to_email, applicant_name, application_id, lang='en'):
     api_key = os.environ.get('SENDGRID_API_KEY')
     from_email = os.environ.get('SENDGRID_FROM_EMAIL')
-    
-    if not api_key or not from_email:
-        return
-    
+    if not api_key or not from_email: return
+
     if lang == 'es':
-        subject = 'Solicitud Recibida – Pago Requerido para Continuar'
-        content = f'''
-        <html>
-            <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
-                <h2>¡Hola {applicant_name}!</h2>
-                <p>Agradecemos haber recibido su solicitud de arrendamiento para Choice Properties.</p>
-                
-                <h3>ID de Solicitud: <strong>{application_id}</strong></h3>
-                
-                <h3>Próximo Paso: Pago de la Tarifa de Solicitud</h3>
-                <p>Para proceder con la revisión de su solicitud, se requiere una tarifa de solicitud de <strong>$50</strong> (no reembolsable).</p>
-                
-                <p><strong>Tenga en cuenta:</strong> El pago de la tarifa se maneja fuera de este sistema. Por favor, comuníquese con nuestro equipo de gestión de propiedades para obtener instrucciones de pago.</p>
-                
-                <h3>¿Qué Sucede Después?</h3>
-                <ol>
-                    <li>Una vez confirmado el pago, iniciaremos la revisión de su solicitud</li>
-                    <li>Podemos solicitar verificación de empleo, crédito o referencias adicionales</li>
-                    <li>Recibirá una notificación sobre el estado de su solicitud dentro de 2-3 días hábiles</li>
-                </ol>
-                
-                <p>Para ver el estado de su solicitud, visite nuestro panel de aplicantes y use su ID de solicitud: <strong>{application_id}</strong></p>
-                
-                <p>Si tiene preguntas, no dude en comunicarse con nosotros.</p>
-                <p>Saludos cordiales,<br>Equipo de Choice Properties</p>
-            </body>
-        </html>
-        '''
+        subject = 'Solicitud Recibida – Pago Requerido'
+        title = "Confirmación de Solicitud"
+        body = f"""
+            <h2>¡Hola {applicant_name}!</h2>
+            <p>Agradecemos haber recibido su solicitud de arrendamiento para Choice Properties.</p>
+            <div class="id-box">ID de Solicitud: <strong>{application_id}</strong></div>
+            <h3>Próximo Paso: Pago de la Tarifa</h3>
+            <p>Para proceder, se requiere una tarifa de <span class="highlight">$50</span> (no reembolsable).</p>
+            <p><strong>Nota:</strong> El pago se maneja fuera de este sistema. Por favor, comuníquese con nuestro equipo para obtener instrucciones.</p>
+            <a href="{request.host_url}dashboard/?id={application_id}" class="button">Ver Mi Dashboard</a>
+        """
     else:
-        subject = 'Application Received – Payment Required to Proceed'
-        content = f'''
-        <html>
-            <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
-                <h2>Hello {applicant_name}!</h2>
-                <p>Thank you for submitting your rental application to Choice Properties.</p>
-                
-                <h3>Application ID: <strong>{application_id}</strong></h3>
-                
-                <h3>Next Step: Application Fee Payment</h3>
-                <p>To proceed with the review of your application, an application fee of <strong>$50</strong> (non-refundable) is required.</p>
-                
-                <p><strong>Please Note:</strong> Payment is handled outside this system. Please contact our property management team for payment instructions.</p>
-                
-                <h3>What Happens Next?</h3>
-                <ol>
-                    <li>Once payment is confirmed, we will begin reviewing your application</li>
-                    <li>We may request employment verification, credit check, or additional references</li>
-                    <li>You will receive notification of your application status within 2-3 business days</li>
-                </ol>
-                
-                <p>To check your application status, visit our applicant dashboard and use your Application ID: <strong>{application_id}</strong></p>
-                
-                <p>If you have any questions, please don't hesitate to contact us.</p>
-                <p>Best regards,<br>Choice Properties Team</p>
-            </body>
-        </html>
-        '''
+        subject = 'Application Received – Payment Required'
+        title = "Application Confirmation"
+        body = f"""
+            <h2>Hello {applicant_name}!</h2>
+            <p>Thank you for submitting your rental application to Choice Properties.</p>
+            <div class="id-box">Application ID: <strong>{application_id}</strong></div>
+            <h3>Next Step: Application Fee Payment</h3>
+            <p>To proceed, an application fee of <span class="highlight">$50</span> (non-refundable) is required.</p>
+            <p><strong>Please Note:</strong> Payment is handled outside this system. Contact our team for instructions.</p>
+            <a href="{request.host_url}dashboard/?id={application_id}" class="button">View My Dashboard</a>
+        """
     
-    message = Mail(
-        from_email=from_email,
-        to_emails=to_email,
-        subject=subject,
-        html_content=content
-    )
-    
+    content = _get_email_template(title, body, lang)
+    message = Mail(from_email=from_email, to_emails=to_email, subject=subject, html_content=content)
     try:
-        sg = SendGridAPIClient(api_key)
-        sg.send(message)
+        SendGridAPIClient(api_key).send(message)
     except Exception as e:
-        print(f"Failed to send email: {str(e)}")
-
-@app.route('/api/send-email', methods=['POST'])
-def send_email():
-    data = request.json
-    api_key = os.environ.get('SENDGRID_API_KEY')
-    from_email = os.environ.get('SENDGRID_FROM_EMAIL')
-    
-    if not api_key or not from_email:
-        lang = request.headers.get('Accept-Language', 'en')
-        error_msg = "SendGrid not configured on server" if lang.startswith('en') else "SendGrid no está configurado en el servidor"
-        return jsonify({"error": error_msg}), 500
-
-    message = Mail(
-        from_email=from_email,
-        to_emails=data.get('to'),
-        subject=data.get('subject'),
-        html_content=data.get('content')
-    )
-    
-    try:
-        sg = SendGridAPIClient(api_key)
-        response = sg.send(message)
-        lang = request.headers.get('Accept-Language', 'en')
-        success_msg = "Email sent" if lang.startswith('en') else "Correo electrónico enviado"
-        return jsonify({"status": "success", "message": success_msg}), 200
-    except Exception as e:
-        lang = request.headers.get('Accept-Language', 'en')
-        error_prefix = "Error: " if lang.startswith('en') else "Error: "
-        return jsonify({"error": f"{error_prefix}{str(e)}"}), 500
-
-@app.route('/api/application-status/<app_id>')
-def get_application_status(app_id):
-    try:
-        app_record = Application.query.filter_by(application_id=app_id).first()
-        if not app_record:
-            return jsonify({'error': 'Application not found'}), 404
-            
-        return jsonify({
-            'application_id': app_record.application_id,
-            'applicant_name': app_record.applicant_name,
-            'applicant_email': app_record.applicant_email,
-            'property_address': app_record.form_data.get('propertyAddress', 'Property Application') if app_record.form_data else 'Property Application',
-            'application_status': app_record.application_status,
-            'payment_status': app_record.payment_status,
-            'created_at': app_record.created_at.isoformat()
-        }), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/admin/applications')
-def admin_get_applications():
-    try:
-        apps = Application.query.order_by(Application.created_at.desc()).all()
-        return jsonify([{
-            'application_id': a.application_id,
-            'applicant_name': a.applicant_name,
-            'property_address': a.form_data.get('propertyAddress') if a.form_data else 'N/A',
-            'application_status': a.application_status,
-            'payment_status': a.payment_status,
-            'created_at': a.created_at.isoformat()
-        } for a in apps]), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/admin/application/<app_id>')
-def admin_get_application(app_id):
-    try:
-        app_record = Application.query.filter_by(application_id=app_id).first()
-        if not app_record:
-            return jsonify({'error': 'Not found'}), 404
-        return jsonify({
-            'application_id': app_record.application_id,
-            'applicant_name': app_record.applicant_name,
-            'applicant_email': app_record.applicant_email,
-            'application_status': app_record.application_status,
-            'payment_status': app_record.payment_status,
-            'form_data': app_record.form_data,
-            'created_at': app_record.created_at.isoformat()
-        }), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Email fail: {e}")
 
 def sendStatusChangeEmail(to_email, name, status, app_id, is_payment_confirmation=False):
     api_key = os.environ.get('SENDGRID_API_KEY')
@@ -234,18 +159,20 @@ def sendStatusChangeEmail(to_email, name, status, app_id, is_payment_confirmatio
     dashboard_url = f"{request.host_url}dashboard/?id={app_id}"
     
     if is_payment_confirmation:
-        subject = "Payment Confirmed – Application Now Under Review"
-        content = f"<h2>Hello {name},</h2><p>We have confirmed your payment. Your application is now <strong>Under Review</strong>.</p>"
+        subject = "Payment Confirmed – Choice Properties"
+        title = "Payment Confirmation"
+        body = f"<h2>Hello {name},</h2><p>We have confirmed your payment. Your application is now <span class='highlight'>Under Review</span>.</p>"
     else:
         status_text = status.replace('_', ' ').title()
         subject = f"Application Status Update: {status_text}"
-        content = f"<h2>Hello {name},</h2><p>Your application status has been updated to: <strong>{status_text}</strong>.</p>"
-        
+        title = "Status Update"
+        body = f"<h2>Hello {name},</h2><p>Your application status has been updated to: <span class='highlight'>{status_text}</span>.</p>"
         if status == 'denied':
-            content += "<p style='margin-top:20px; font-size:12px; color:#666;'>Fair Housing Notice: We do not discriminate based on race, color, religion, national origin, sex, familial status, or disability.</p>"
+            body += "<p style='margin-top:20px; font-size:11px; color:#7f8c8d;'>Choice Properties complies with Fair Housing laws. We do not discriminate based on race, color, religion, national origin, sex, familial status, or disability.</p>"
 
-    content += f"<p><a href='{dashboard_url}'>View your application dashboard</a></p>"
+    body += f"<a href='{dashboard_url}' class='button'>Go to Dashboard</a>"
     
+    content = _get_email_template(title, body)
     message = Mail(from_email=from_email, to_emails=to_email, subject=subject, html_content=content)
     try:
         SendGridAPIClient(api_key).send(message)
@@ -316,16 +243,19 @@ def recover_application_id():
         if not api_key or not from_email:
             return jsonify({'error': 'Email service not configured'}), 500
             
-        id_list = "".join([f"<li>ID: <strong>{a.application_id}</strong> - Status: {a.application_status.replace('_', ' ').title()}</li>" for a in apps])
+        id_list = "".join([f"<li style='margin-bottom:10px;'>ID: <strong class='highlight'>{a.application_id}</strong> - Status: {a.application_status.replace('_', ' ').title()}</li>" for a in apps])
         
         subject = "Choice Properties - Application ID Recovery"
-        content = f"""
-        <h2>Application ID Recovery</h2>
-        <p>We found the following applications associated with your email:</p>
-        <ul>{id_list}</ul>
-        <p>You can use these IDs to access your <a href='{request.host_url}dashboard/'>Applicant Dashboard</a>.</p>
+        title = "Application Recovery"
+        body = f"""
+            <h2>Application ID Recovery</h2>
+            <p>We found the following applications associated with your email:</p>
+            <ul style="list-style: none; padding: 0;">{id_list}</ul>
+            <p>You can use these IDs to access your dashboard below.</p>
+            <a href="{request.host_url}dashboard/" class="button">Access Dashboard</a>
         """
         
+        content = _get_email_template(title, body)
         message = Mail(from_email=from_email, to_emails=email, subject=subject, html_content=content)
         SendGridAPIClient(api_key).send(message)
         
