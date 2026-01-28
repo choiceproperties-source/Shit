@@ -7,6 +7,10 @@ class ApplicantDashboard {
     constructor() {
         this.appId = new URLSearchParams(window.location.search).get('id');
         this.elements = {
+            login: document.getElementById('loginState'),
+            loginAppId: document.getElementById('loginAppId'),
+            viewStatusBtn: document.getElementById('viewStatusBtn'),
+            loginError: document.getElementById('loginError'),
             loading: document.getElementById('loadingState'),
             error: document.getElementById('errorState'),
             view: document.getElementById('dashboardView'),
@@ -15,17 +19,39 @@ class ApplicantDashboard {
             displayProperty: document.getElementById('displayProperty'),
             displayDate: document.getElementById('displayDate'),
             timeline: document.getElementById('timelineSection'),
-            paymentCard: document.getElementById('paymentInfoCard')
+            paymentCard: document.getElementById('paymentInfoCard'),
+            logoutBtn: document.getElementById('logoutBtn')
         };
+        
+        this.setupLogin();
+    }
+
+    setupLogin() {
+        if (this.elements.viewStatusBtn) {
+            this.elements.viewStatusBtn.addEventListener('click', () => {
+                const id = this.elements.loginAppId.value.trim();
+                if (id) {
+                    window.location.search = `?id=${id}`;
+                }
+            });
+        }
+        
+        if (this.elements.logoutBtn) {
+            this.elements.logoutBtn.addEventListener('click', () => {
+                window.location.href = '/';
+            });
+        }
     }
 
     async init() {
         if (!this.appId) {
-            this.showError('No application ID provided.');
+            this.showLogin();
             return;
         }
 
         try {
+            this.elements.login.classList.add('hidden');
+            this.elements.loading.classList.remove('hidden');
             const data = await this.fetchApplicationStatus();
             if (data) {
                 this.renderDashboard(data);
@@ -36,6 +62,11 @@ class ApplicantDashboard {
             console.error(err);
             this.showError('An error occurred while fetching your application.');
         }
+    }
+
+    showLogin() {
+        this.elements.loading.classList.add('hidden');
+        this.elements.login.classList.remove('hidden');
     }
 
     async fetchApplicationStatus() {
