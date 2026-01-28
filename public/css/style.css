@@ -366,6 +366,41 @@
 
         .btn-submit {
             background: linear-gradient(to right, var(--success), #2ecc71);
+            position: relative;
+            overflow: hidden;
+            min-width: 180px;
+            justify-content: center;
+        }
+
+        .btn-submit.loading {
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .btn-submit.loading::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .submit-disclaimer {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
         }
 
         .error-message {
