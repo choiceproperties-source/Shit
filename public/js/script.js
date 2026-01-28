@@ -1169,24 +1169,8 @@ class RentalApplication {
     }
     
     showAutoSaveIndicator() {
-        const indicator = document.getElementById('autoSaveIndicator');
-        if (indicator) {
-            indicator.style.display = 'block';
-            indicator.style.opacity = '1';
-            indicator.textContent = 'Progress saved';
-            
-            // Clear existing timeout if any
-            if (this.state.saveIndicatorTimeout) {
-                clearTimeout(this.state.saveIndicatorTimeout);
-            }
-            
-            this.state.saveIndicatorTimeout = setTimeout(() => {
-                indicator.style.opacity = '0';
-                setTimeout(() => {
-                    indicator.style.display = 'none';
-                }, 500);
-            }, 2000);
-        }
+        // Silent save: indicator functionality disabled to avoid distractions
+        return;
     }
     
     queueSave() { this.saveProgress(); }
