@@ -976,15 +976,55 @@ class RentalApplication {
     }
     
     generateApplicationSummary() {
-        const summary = document.getElementById('applicationSummary');
-        if (!summary) return;
-        
-        const data = this.getAllFormData();
-        let html = '<div class="summary-item"><div class="summary-label">Name</div><div class="summary-value">' + (data.firstName || '') + ' ' + (data.lastName || '') + '</div></div>';
-        html += '<div class="summary-item"><div class="summary-label">Property</div><div class="summary-value">' + (data.propertyAddress || '') + '</div></div>';
-        html += '<div class="summary-item"><div class="summary-label">Monthly Income</div><div class="summary-value">' + (data.monthlyIncome || '') + '</div></div>';
-        
-        summary.innerHTML = html;
+        const summaryContainer = document.getElementById('applicationSummary');
+        if (!summaryContainer) return;
+
+        const form = document.getElementById('rentalApplication');
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((value, key) => {
+            if (value && key !== 'SSN' && key !== 'Application ID') {
+                data[key] = value;
+            }
+        });
+
+        // Group the data for a cleaner summary
+        const groups = {
+            'Property & Applicant': ['Property Address', 'Requested Move-in Date', 'Desired Lease Term', 'First Name', 'Last Name', 'Email', 'Phone', 'DOB'],
+            'Residency': ['Current Address', 'Residency Duration', 'Current Rent Amount', 'Reason for leaving', 'Current Landlord Name', 'Landlord Phone'],
+            'Occupancy': ['Total Occupants', 'Additional Occupants', 'Has Pets', 'Pet Details'],
+            'Employment & Income': ['Employment Status', 'Employer', 'Job Title', 'Employment Duration', 'Supervisor Name', 'Supervisor Phone', 'Monthly Income', 'Other Income']
+        };
+
+        let summaryHtml = '';
+        for (const [groupName, fields] of Object.entries(groups)) {
+            let groupFieldsHtml = '';
+            fields.forEach(field => {
+                const value = data[field];
+                if (value) {
+                    groupFieldsHtml += `
+                        <div class="summary-item">
+                            <div class="summary-label">${field}</div>
+                            <div class="summary-value">${value}</div>
+                        </div>`;
+                }
+            });
+
+            if (groupFieldsHtml) {
+                summaryHtml += `
+                    <div class="summary-group">
+                        <div class="summary-header">
+                            <span>${groupName}</span>
+                            <i class="fas fa-check-circle" style="color: var(--success); font-size: 14px;"></i>
+                        </div>
+                        <div class="summary-content">
+                            ${groupFieldsHtml}
+                        </div>
+                    </div>`;
+            }
+        }
+
+        summaryContainer.innerHTML = summaryHtml;
     }
     
     getAllFormData() {
