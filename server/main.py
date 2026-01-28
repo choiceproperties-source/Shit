@@ -183,5 +183,111 @@ def get_application_status(app_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/admin/applications')
+def admin_get_applications():
+    try:
+        apps = Application.query.order_by(Application.created_at.desc()).all()
+        return jsonify([{
+            'application_id': a.application_id,
+            'applicant_name': a.applicant_name,
+            'property_address': a.form_data.get('propertyAddress') if a.form_data else 'N/A',
+            'application_status': a.application_status,
+            'payment_status': a.payment_status,
+            'created_at': a.created_at.isoformat()
+        } for a in apps]), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/application/<app_id>')
+def admin_get_application(app_id):
+    try:
+        app_record = Application.query.filter_by(application_id=app_id).first()
+        if not app_record:
+            return jsonify({'error': 'Not found'}), 404
+        return jsonify({
+            'application_id': app_record.application_id,
+            'applicant_name': app_record.applicant_name,
+            'applicant_email': app_record.applicant_email,
+            'application_status': app_record.application_status,
+            'payment_status': app_record.payment_status,
+            'form_data': app_record.form_data,
+            'created_at': app_record.created_at.isoformat()
+        }), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/application/<app_id>/payment', methods=['POST'])
+def admin_update_payment(app_id):
+    try:
+        app_record = Application.query.filter_by(application_id=app_id).first()
+        if not app_record: return jsonify({'error': 'Not found'}), 404
+        
+        status = request.json.get('status')
+        if status == 'paid':
+            app_record.payment_status = 'paid'
+            app_record.application_status = 'under_review'
+            db.session.commit()
+            
+            # Trigger Email
+            _send_status_update_email(
+                app_record.applicant_email, 
+                app_record.applicant_name, 
+                'under_review', 
+                app_id,
+                is_payment_confirmation=True
+            )
+            
+        return jsonify({'status': 'success'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/application/<app_id>/status', methods=['POST'])
+def admin_update_status(app_id):
+    try:
+        app_record = Application.query.filter_by(application_id=app_id).first()
+        if not app_record: return jsonify({'error': 'Not found'}), 404
+        
+        status = request.json.get('status')
+        app_record.application_status = status
+        db.session.commit()
+        
+        # Trigger Email
+        _send_status_update_email(
+            app_record.applicant_email, 
+            app_record.applicant_name, 
+            status, 
+            app_id
+        )
+        
+        return jsonify({'status': 'success'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def _send_status_update_email(to_email, name, status, app_id, is_payment_confirmation=False):
+    api_key = os.environ.get('SENDGRID_API_KEY')
+    from_email = os.environ.get('SENDGRID_FROM_EMAIL')
+    if not api_key or not from_email: return
+
+    dashboard_url = f"{request.host_url}dashboard/?id={app_id}"
+    
+    if is_payment_confirmation:
+        subject = "Payment Confirmed – Application Now Under Review"
+        content = f"<h2>Hello {name},</h2><p>We have confirmed your payment. Your application is now <strong>Under Review</strong>.</p>"
+    else:
+        status_text = status.replace('_', ' ').title()
+        subject = f"Application Status Update: {status_text}"
+        content = f"<h2>Hello {name},</h2><p>Your application status has been updated to: <strong>{status_text}</strong>.</p>"
+        
+        if status == 'denied':
+            content += "<p style='margin-top:20px; font-size:12px; color:#666;'>Fair Housing Notice: We do not discriminate based on race, color, religion, national origin, sex, familial status, or disability.</p>"
+
+    content += f"<p><a href='{dashboard_url}'>View your application dashboard</a></p>"
+    
+    message = Mail(from_email=from_email, to_emails=to_email, subject=subject, html_content=content)
+    try:
+        SendGridAPIClient(api_key).send(message)
+    except Exception as e:
+        print(f"Email fail: {e}")
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Review | Choice Admin</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-building"></i>
+                <span>Choice Admin</span>
+            </div>
+            <nav>
+                <a href="index.html" class="active"><i class="fas fa-list"></i> Applications</a>
+            </nav>
+        </aside>
+
+        <main class="content">
+            <header class="top-header">
+                <div class="header-left">
+                    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to List</a>
+                    <h2 id="appHeaderTitle">Review Application</h2>
+                </div>
+                <div class="action-buttons" id="mainActions">
+                    <!-- Actions injected here -->
+                </div>
+            </header>
+
+            <div class="grid-layout">
+                <div class="main-content">
+                    <section class="card">
+                        <h3>Applicant Information</h3>
+                        <div id="applicantInfo" class="data-grid"></div>
+                    </section>
+
+                    <section class="card">
+                        <h3>Full Application Details</h3>
+                        <div id="fullData" class="data-grid"></div>
+                    </section>
+                </div>
+
+                <aside class="sidebar-content">
+                    <section class="card status-card">
+                        <h3>Status Management</h3>
+                        <div class="current-status">
+                            <span id="appStatusBadge" class="badge"></span>
+                            <span id="payStatusBadge" class="badge"></span>
+                        </div>
+                        
+                        <div class="admin-controls">
+                            <div id="paymentControl" class="control-group hidden">
+                                <button id="confirmPaymentBtn" class="btn-success block">✔ Mark Payment as Paid</button>
+                            </div>
+
+                            <div class="control-group">
+                                <label>Update Application Status</label>
+                                <select id="statusSelect" class="input">
+                                    <option value="under_review">Under Review</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="denied">Denied</option>
+                                    <option value="conditionally_approved">Conditionally Approved</option>
+                                </select>
+                                <button id="updateStatusBtn" class="btn-primary block mt-10">Update & Notify Applicant</button>
+                            </div>
+                        </div>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <script src="admin.js"></script>
+</body>
+</html>
