@@ -8,7 +8,24 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 class AdminList {
+    constructor() {
+        this.adminConfig = {
+            allowlist: ['admin@choiceproperties.com', 'manager@choiceproperties.com']
+        };
+    }
+
+    isAdmin(email) {
+        return this.adminConfig.allowlist.includes(email?.toLowerCase());
+    }
+
     async init() {
+        // Example check: In a real app, this email would come from a session/auth context
+        // For now, we'll implement the helper as requested
+        const currentUserEmail = localStorage.getItem('userEmail'); 
+        if (currentUserEmail && !this.isAdmin(currentUserEmail)) {
+            console.warn('Current user is not in the admin allowlist.');
+        }
+
         try {
             const response = await fetch('/api/admin/applications');
             const apps = await response.json();

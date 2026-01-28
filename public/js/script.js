@@ -3,6 +3,9 @@
 // ============================================================
 class RentalApplication {
     constructor() {
+        this.adminConfig = {
+            allowlist: ['admin@choiceproperties.com', 'manager@choiceproperties.com']
+        };
         this.config = {
             LOCAL_STORAGE_KEY: "choicePropertiesRentalApp",
             AUTO_SAVE_INTERVAL: 30000,
@@ -32,6 +35,10 @@ class RentalApplication {
         this.initialize();
     }
     
+    isAdmin(email) {
+        return this.adminConfig.allowlist.includes(email?.toLowerCase());
+    }
+
     initialize() {
         this.setupEventListeners();
         this.setupOfflineDetection();
