@@ -19,11 +19,11 @@ class AdminList {
     }
 
     async init() {
-        // Example check: In a real app, this email would come from a session/auth context
-        // For now, we'll implement the helper as requested
-        const currentUserEmail = localStorage.getItem('userEmail'); 
-        if (currentUserEmail && !this.isAdmin(currentUserEmail)) {
-            console.warn('Current user is not in the admin allowlist.');
+        const currentUserEmail = localStorage.getItem('adminUserEmail'); 
+        
+        if (!this.isAdmin(currentUserEmail)) {
+            this.showAccessRestricted();
+            return;
         }
 
         try {
@@ -117,6 +117,19 @@ class AdminDetail {
 
     formatKey(key) {
         return key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+    }
+
+    showAccessRestricted() {
+        document.body.innerHTML = `
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: 'Inter', sans-serif; background: #f1f5f9; color: #0f172a; text-align: center; padding: 20px;">
+                <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); max-width: 400px; width: 100%;">
+                    <i class="fas fa-lock" style="font-size: 3rem; color: #dc2626; margin-bottom: 20px; display: block;"></i>
+                    <h1 style="font-size: 1.5rem; margin-bottom: 10px;">Access Restricted</h1>
+                    <p style="color: #64748b; margin-bottom: 30px;">You do not have permission to access the administration area. Please contact the system administrator if you believe this is an error.</p>
+                    <a href="../" style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: background 0.2s;">Return to Home</a>
+                </div>
+            </div>
+        `;
     }
 
     async updatePaymentStatus(status) {
