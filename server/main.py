@@ -269,10 +269,12 @@ def recover_application_id():
 def _send_admin_notification(form_data, application_id):
     api_key = os.environ.get('SENDGRID_API_KEY')
     from_email = os.environ.get('SENDGRID_FROM_EMAIL')
-    # Default admin email, can be updated to an environment variable later
-    admin_email = os.environ.get('ADMIN_NOTIFICATION_EMAIL', from_email)
     
-    if not api_key or not from_email: return
+    # Support multiple admin emails via comma-separated secret or list
+    admin_emails_raw = os.environ.get('ADMIN_NOTIFICATION_EMAIL', from_email)
+    admin_emails = [e.strip() for e in admin_emails_raw.split(',') if e.strip()]
+    
+    if not api_key or not from_email or not admin_emails: return
 
     applicant_name = f"{form_data.get('firstName', '')} {form_data.get('lastName', '')}"
     property_address = form_data.get('propertyAddress', 'N/A')
@@ -293,7 +295,16 @@ def _send_admin_notification(form_data, application_id):
     """
     
     content = _get_email_template(title, body)
-    message = Mail(from_email=from_email, to_emails=admin_email, subject=subject, html_content=content)
+    
+    # Send to all configured admin emails
+    message = Mail(
+        from_email=from_email,
+        to_emails=admin_emails,
+        subject=subject,
+        html_content=content,
+        is_multiple=True
+    )
+    
     try:
         SendGridAPIClient(api_key).send(message)
     except Exception as e:
