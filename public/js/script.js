@@ -119,37 +119,56 @@ class RentalApplication {
                 employmentDurationLabel: 'How long at this job?',
                 supervisorNameLabel: 'Supervisor Name',
                 supervisorPhoneLabel: 'Teléfono del supervisor',
-                incomeVerification: 'Verificación de Ingresos',
-                monthlyIncomeLabel: 'Ingreso Mensual Bruto',
-                otherIncomeLabel: 'Otros Ingresos Mensuales',
-                incomeHint: 'Antes de impuestos y deducciones',
-                otherIncomeHint: 'Pensión alimenticia, discapacidad, etc.',
-                financialHeaderTitle: 'Finanzas y Referencias',
-                personalReferences: 'Referencias Personales',
-                referencesHint: 'Por favor, proporcione dos referencias que no sean parientes',
-                ref1NameLabel: 'Nombre de Referencia 1 (Obligatorio)',
-                ref1PhoneLabel: 'Teléfono de Referencia 1 (Obligatorio)',
-                ref2NameLabel: 'Nombre de Referencia 2 (Opcional)',
-                emergencyInfo: 'Contacto de Emergencia',
-                emergencyNameLabel: 'Nombre de Contacto',
-                emergencyPhoneLabel: 'Teléfono de Contacto',
-                reviewHeaderTitle: 'Revisar y Enviar',
-                appSummary: 'Resumen de la Solicitud',
-                appFeeLabel: 'Tarifa de Solicitud:',
-                appFeeHint: 'La tarifa de solicitud es de $50 no reembolsables y se requiere antes de que su solicitud pueda ser revisada.',
-                nextStepsTitle: 'Cronograma de Próximos Pasos',
-                step1Title: 'Paso 1: Envío y correo de confirmación (Instantáneo)',
-                step2Title: 'Paso 2: Revisión del administrador (2-3 días hábiles)',
-                step3Title: 'Paso 3: Verificación de antecedentes y crédito (si es necesario)',
-                step4Title: 'Paso 4: Aprobación final y firma del contrato',
-                documentUpload: 'Carga de Documentos (Opcional)',
-                dropZoneText: 'Arrastre y suelte archivos aquí o haga clic para buscar',
-                fileLimits: 'PDF, JPG, PNG (Máx. 10 MB)',
-                legalDeclaration: 'Declaración Legal',
-                legalCertify: 'Certifico que la información proporcionada en esta solicitud es verdadera y correcta a mi mejor saber y entender. Entiendo que cualquier declaración falsa puede ser motivo de rechazo de esta solicitud o de terminación de cualquier contrato de arrendamiento posterior.',
-                legalAuthorize: 'Autorizo a Choice Properties a verificar la información proporcionada, incluyendo historial crediticio, empleo y referencias. Las verificaciones de antecedentes pueden utilizar proveedores estándar de la industria como TransUnion o Experian donde esté permitido.',
-                termsAgreeLabel: 'Acepto los términos y condiciones',
+                incomeVerification: 'Income Verification',
+                monthlyIncomeLabel: 'Gross Monthly Income',
+                otherIncomeLabel: 'Other Monthly Income',
+                incomeHint: 'Before taxes and deductions',
+                otherIncomeHint: 'Alimony, disability, etc.',
+                financialHeaderTitle: 'Financial & References',
+                personalReferences: 'Personal References',
+                referencesHint: 'Please provide two references who are not relatives',
+                ref1NameLabel: 'Reference 1 Name (Required)',
+                ref1PhoneLabel: 'Reference 1 Phone (Required)',
+                ref2NameLabel: 'Reference 2 Name (Optional)',
+                emergencyInfo: 'Emergency Contact',
+                emergencyNameLabel: 'Contact Name',
+                emergencyPhoneLabel: 'Contact Phone',
+                reviewHeaderTitle: 'Review & Submit',
+                appSummary: 'Application Summary',
+                appFeeLabel: 'Application Fee:',
+                appFeeHint: 'The application fee is non-refundable $50 and is required before your application can be reviewed.',
+                nextStepsTitle: 'Next Steps Timeline',
+                step1Title: 'Step 1: Submission & Confirmation Email (Instant)',
+                step2Title: 'Step 2: Admin Review (2-3 Business Days)',
+                step3Title: 'Step 3: Background & Credit Check (If Required)',
+                step4Title: 'Step 4: Final Approval & Lease Signing',
+                documentUpload: 'Document Upload (Optional)',
+                dropZoneText: 'Drag and drop files here or click to browse',
+                fileLimits: 'PDF, JPG, PNG (Max 10MB)',
+                legalDeclaration: 'Legal Declaration',
+                legalCertify: 'I certify that the information provided in this application is true and correct to the best of my knowledge. I understand that any false statements may be grounds for rejection of this application or termination of any subsequent lease.',
+                legalAuthorize: 'I authorize Choice Properties to verify the information provided, including credit history, employment, and references. Background checks may use industry-standard providers like TransUnion or Experian where permitted.',
+                termsAgreeLabel: 'I agree to the terms and conditions',
                 submitBtn: 'Submit Application',
+                submitting: 'Submitting...',
+                processing: 'Processing',
+                validating: 'Validating',
+                submittingStep: 'Submitting',
+                complete: 'Complete',
+                submissionTitle: 'Submitting your application',
+                submissionHint: 'Please do not close this window. This may take a few moments...',
+                successTitle: 'Application Submitted Successfully!',
+                successText: 'Thank you for choosing Choice Properties. Your application has been received and is being processed.',
+                appId: 'Application ID:',
+                whatNext: 'What Happens Next?',
+                emailHint: 'You will receive a confirmation email shortly',
+                reviewHint: 'We will review your application within 2-3 business days',
+                contactHint: 'We may contact you for additional information',
+                printBtn: 'Print Summary',
+                newBtn: 'New Application',
+                errorSendGrid: 'SendGrid not configured on server',
+                errorGeneral: 'An error occurred while submitting the application',
+                errorEmailSent: 'Email sent',
                 errRequired: 'Required',
                 errEmail: 'Invalid email',
                 errPhone: 'Invalid phone',
@@ -312,6 +331,28 @@ class RentalApplication {
                 // Update placeholders and options if needed
                 this.updateBilingualLabels(t);
                 
+                // Update specific informational hints and text
+                const incomeHint = document.querySelector('.income-hint');
+                if (incomeHint) incomeHint.textContent = t.incomeHint;
+                const otherIncomeHint = document.querySelector('.other-income-hint');
+                if (otherIncomeHint) otherIncomeHint.textContent = t.otherIncomeHint;
+                const refHint = document.querySelector('.references-hint');
+                if (refHint) refHint.textContent = t.referencesHint;
+                const appFeeHint = document.querySelector('.app-fee-hint');
+                if (appFeeHint) appFeeHint.textContent = t.appFeeHint;
+                const ssnHint = document.querySelector('.ssn-hint');
+                if (ssnHint) ssnHint.textContent = t.ssnHint;
+                
+                // Update step content in Section 5
+                const step1Desc = document.querySelector('#step1-desc');
+                if (step1Desc) step1Desc.textContent = t.step1Title;
+                const step2Desc = document.querySelector('#step2-desc');
+                if (step2Desc) step2Desc.textContent = t.step2Title;
+                const step3Desc = document.querySelector('#step3-desc');
+                if (step3Desc) step3Desc.textContent = t.step3Title;
+                const step4Desc = document.querySelector('#step4-desc');
+                if (step4Desc) step4Desc.textContent = t.step4Title;
+
                 // Update dynamic text in the DOM for non-standard elements
                 document.querySelectorAll('[data-i18n]').forEach(el => {
                     const key = el.getAttribute('data-i18n');
