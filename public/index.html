@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -93,6 +94,10 @@
             <p data-i18n="successText">Thank you for choosing Choice Properties. Your application has been received and is being processed.</p>
             <div class="application-id">
                 <span data-i18n="appId">Application ID:</span> <strong id="successAppId" style="color: var(--primary); letter-spacing: 1px;">CP-XXXXXX</strong>
+            </div>
+            <div id="qr-section" style="margin: 20px 0; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                <div id="qrcode" style="padding: 10px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"></div>
+                <p style="font-size: 12px; color: var(--text-muted);" data-i18n="qrHint">Scan to bookmark your dashboard</p>
             </div>
             <div style="margin: 25px 0;">
                 <p style="font-weight: bold; margin-bottom: 15px;" data-i18n="whatNext">What happens next?</p>

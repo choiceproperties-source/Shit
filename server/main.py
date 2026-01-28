@@ -299,5 +299,39 @@ def admin_update_status(app_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/recover-id', methods=['POST'])
+def recover_application_id():
+    try:
+        email = request.json.get('email')
+        if not email:
+            return jsonify({'error': 'Email is required'}), 400
+            
+        apps = Application.query.filter_by(applicant_email=email).all()
+        if not apps:
+            # We return success anyway for security to prevent email enumeration
+            return jsonify({'status': 'success', 'message': 'If an application exists for this email, we have sent the details.'}), 200
+            
+        api_key = os.environ.get('SENDGRID_API_KEY')
+        from_email = os.environ.get('SENDGRID_FROM_EMAIL')
+        if not api_key or not from_email:
+            return jsonify({'error': 'Email service not configured'}), 500
+            
+        id_list = "".join([f"<li>ID: <strong>{a.application_id}</strong> - Status: {a.application_status.replace('_', ' ').title()}</li>" for a in apps])
+        
+        subject = "Choice Properties - Application ID Recovery"
+        content = f"""
+        <h2>Application ID Recovery</h2>
+        <p>We found the following applications associated with your email:</p>
+        <ul>{id_list}</ul>
+        <p>You can use these IDs to access your <a href='{request.host_url}dashboard/'>Applicant Dashboard</a>.</p>
+        """
+        
+        message = Mail(from_email=from_email, to_emails=email, subject=subject, html_content=content)
+        SendGridAPIClient(api_key).send(message)
+        
+        return jsonify({'status': 'success', 'message': 'Email sent with your application details.'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

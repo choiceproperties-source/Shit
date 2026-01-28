@@ -24,6 +24,7 @@ class ApplicantDashboard {
         };
         
         this.setupLogin();
+        this.setupRecovery();
     }
 
     setupLogin() {
@@ -45,6 +46,48 @@ class ApplicantDashboard {
             this.elements.logoutBtn.addEventListener('click', () => {
                 window.location.href = '/';
             });
+        }
+    }
+
+    setupRecovery() {
+        const forgotBtn = document.getElementById('forgotIdBtn');
+        const modal = document.getElementById('recoveryModal');
+        const closeBtn = document.getElementById('closeRecoveryBtn');
+        const sendBtn = document.getElementById('sendRecoveryBtn');
+        const emailInput = document.getElementById('recoveryEmail');
+        const message = document.getElementById('recoveryMessage');
+
+        if (forgotBtn) forgotBtn.onclick = () => modal.classList.remove('hidden');
+        if (closeBtn) closeBtn.onclick = () => modal.classList.add('hidden');
+        
+        if (sendBtn) {
+            sendBtn.onclick = async () => {
+                const email = emailInput.value.trim();
+                if (!email) return;
+                
+                sendBtn.disabled = true;
+                sendBtn.textContent = 'Sending...';
+                
+                try {
+                    const res = await fetch('/api/recover-id', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email })
+                    });
+                    const data = await res.json();
+                    
+                    message.textContent = data.message || data.error;
+                    message.classList.remove('hidden');
+                    message.style.color = data.error ? 'var(--danger)' : 'var(--success)';
+                } catch (err) {
+                    message.textContent = 'Connection error. Please try again.';
+                    message.classList.remove('hidden');
+                    message.style.color = 'var(--danger)';
+                } finally {
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = 'Send IDs';
+                }
+            };
         }
     }
 
