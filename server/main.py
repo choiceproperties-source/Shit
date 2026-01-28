@@ -53,8 +53,11 @@ def submit_application():
         db.session.add(app_record)
         db.session.commit()
         
-        # Send confirmation email
+        # Send confirmation email to applicant
         _send_confirmation_email(applicant_email, applicant_name, application_id, lang)
+        
+        # Notify Admin
+        _send_admin_notification(data, application_id)
         
         return jsonify({
             'status': 'success',
@@ -262,6 +265,39 @@ def recover_application_id():
         return jsonify({'status': 'success', 'message': 'Email sent with your application details.'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+def _send_admin_notification(form_data, application_id):
+    api_key = os.environ.get('SENDGRID_API_KEY')
+    from_email = os.environ.get('SENDGRID_FROM_EMAIL')
+    # Default admin email, can be updated to an environment variable later
+    admin_email = os.environ.get('ADMIN_NOTIFICATION_EMAIL', from_email)
+    
+    if not api_key or not from_email: return
+
+    applicant_name = f"{form_data.get('firstName', '')} {form_data.get('lastName', '')}"
+    property_address = form_data.get('propertyAddress', 'N/A')
+    
+    subject = f"NEW APPLICATION: {applicant_name} - {application_id}"
+    title = "New Application Alert"
+    
+    body = f"""
+        <h2 style="color: #1a5276;">New Rental Application Received</h2>
+        <p>A new application has been submitted through the portal.</p>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #eee;">
+            <p><strong>Applicant:</strong> {applicant_name}</p>
+            <p><strong>Property:</strong> {property_address}</p>
+            <p><strong>Application ID:</strong> <span class="highlight">{application_id}</span></p>
+        </div>
+        <p>Log in to the Admin Dashboard to review the full details and manage the approval workflow.</p>
+        <a href="{request.host_url}admin/" class="button">View Admin Dashboard</a>
+    """
+    
+    content = _get_email_template(title, body)
+    message = Mail(from_email=from_email, to_emails=admin_email, subject=subject, html_content=content)
+    try:
+        SendGridAPIClient(api_key).send(message)
+    except Exception as e:
+        print(f"Admin Notification fail: {e}")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
