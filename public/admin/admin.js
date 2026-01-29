@@ -165,14 +165,40 @@ class AdminDetail {
 
     async updatePaymentStatus(status) {
         if (!confirm('Confirm payment has been received?')) return;
+        
         try {
-            const res = await fetch(`/api/admin/application/${this.appId}/payment`, {
+            const adminEmail = localStorage.getItem('adminUserEmail') || 'admin@choiceproperties.com';
+            const config = {
+                URL: "https://pwqjungiwusflcflukeg.supabase.co/",
+                KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cWp1bmdpd3VzZmxjZmx1a2VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1MDIwODAsImV4cCI6MjA4NTA3ODA4MH0.yq_0LfPc81cq_ptDZGnxbs3RDfhW8PlQaTfYUs_bsLE"
+            };
+            const client = supabase.createClient(config.URL, config.KEY);
+
+            // Update Supabase directly for the new architecture
+            const { error } = await client
+                .from('rental_applications')
+                .update({ 
+                    payment_status: status,
+                    application_status: status === 'paid' ? 'under_review' : 'awaiting_payment',
+                    payment_marked_by: adminEmail,
+                    payment_marked_at: new Date().toISOString()
+                })
+                .eq('application_id', this.appId);
+
+            if (error) throw error;
+
+            // Trigger Email notification (via backend API as per current hybrid state)
+            await fetch(`/api/admin/application/${this.appId}/payment`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status })
             });
-            if (res.ok) window.location.reload();
-        } catch (err) { console.error(err); }
+
+            window.location.reload();
+        } catch (err) { 
+            console.error('Update payment error:', err);
+            alert('Failed to update payment status');
+        }
     }
 
     async updateAppStatus() {
