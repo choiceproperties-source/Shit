@@ -1,0 +1,57 @@
+You are a professional full-stack developer. I want you to **update my existing rental application project** to a fully functional, secure, professional system. Do not use Python. The project must be fully compatible with **Supabase + Netlify free tier hosting**, and must not require any paid plans. Follow these rules strictly.
+
+---
+
+### Project Current State:
+- Frontend: 3-file structure (HTML/CSS/JS), 5-step application form, autosave, address autocomplete (Geoapify key: bea2afb13c904abea5cb2c2693541dcf), SSN field UX hints, optional second reference, reset form feature.
+- Backend: Supabase database with table `rental_applications`, stores form JSON, emails via SendGrid triggered after submission.
+- Status tracking: `awaiting_payment` initial status; payment tracking is manual.
+- Security: Some RLS rules may exist; SSN encrypted in frontend before submission.
+
+---
+
+### Tasks to Complete (Strict Logic):
+
+1️⃣ **Application Submission**
+- On form submit:
+  - Generate unique `application_id` (CP-YYYYMMDD-RAND).
+  - Save form JSON to Supabase.
+  - Set:
+    ```
+    application_status = "awaiting_payment"
+    payment_status = "pending"
+    ```
+  - Send **SendGrid email** (English/Spanish) confirming:
+    - Application received
+    - $50 fee required
+    - Payment handled **outside the system**
+    - Dashboard link
+  - Only commit data if save succeeds.
+
+2️⃣ **Applicant Dashboard**
+- Display **live application status**:
+  - `awaiting_payment` → yellow badge, instructions, accepted payment methods, disable review timeline.
+  - `under_review` → show review timeline, next steps, contact info.
+  - `approved` / `conditionally_approved` / `rejected` → show appropriate messages + next steps.
+- Show uploaded files (signed URLs for security).
+- Dashboard updates **instantly** on status/email triggers.
+
+3️⃣ **Admin Dashboard**
+- Login with Supabase admin role (server-side checks only, no client hacks).
+- Features:
+  - View all applications (paginated, filterable, searchable).
+  - View full application details.
+  - Payment status: Pending / Paid.
+  - Button: `✔ Mark Payment as Paid`
+    - Optional payment note
+    - Updates:
+      ```
+      payment_status = "paid"
+      application_status = "under_review"
+      payment_marked_by = admin_id
+      payment_marked_at = timestamp
+      ```
+    - Trigger SendGrid email: "Payment Confirmed – Application Now Under Review"
+
+4️⃣ **File Uploads**
+- Supabase Storage buckets:
