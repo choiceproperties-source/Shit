@@ -173,10 +173,48 @@ class ApplicantDashboard {
     renderAwaitingPayment() {
         this.elements.banner.className = 'status-banner banner-pending';
         this.elements.banner.innerHTML = `
-            <i class="fas fa-clock"></i>
-            <div>Application Submitted – Awaiting Payment Confirmation</div>
+            <i class="fas fa-clock" style="color: #f1c40f;"></i>
+            <div>
+                <div style="font-weight: bold;">🟡 Application Submitted – Awaiting Payment Confirmation</div>
+                <div style="font-size: 0.85rem; margin-top: 5px; opacity: 0.9;">
+                    Your application has been received. Please complete the $50 application fee to begin the review process.
+                </div>
+            </div>
         `;
-        this.elements.paymentCard.classList.remove('hidden');
+        
+        // Add Payment Pending badge if not exists
+        const detailsList = document.querySelector('.details-list');
+        if (detailsList && !document.getElementById('paymentBadge')) {
+            const badgeItem = document.createElement('div');
+            badgeItem.className = 'detail-item';
+            badgeItem.id = 'paymentBadge';
+            badgeItem.innerHTML = `
+                <span class="label">Payment Status:</span>
+                <span class="value"><span class="badge pay-pending" style="background: #f1c40f; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">PENDING</span></span>
+            `;
+            detailsList.appendChild(badgeItem);
+        }
+
+        // Update Payment Info Card with accepted methods
+        if (this.elements.paymentCard) {
+            this.elements.paymentCard.innerHTML = `
+                <h3><i class="fas fa-info-circle"></i> Payment Required</h3>
+                <p>A non-refundable <strong>$50 application fee</strong> is required before we can begin reviewing your application.</p>
+                <div class="payment-note" style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-top: 10px;">
+                    <p><strong>Accepted Payment Methods:</strong></p>
+                    <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9rem;">
+                        <li>Zelle (choiceproperties@email.com)</li>
+                        <li>Venmo (@ChoiceProperties)</li>
+                        <li>Cashier's Check / Money Order</li>
+                    </ul>
+                    <p style="font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.2); pt-10; margin-top: 10px;">
+                        <em>Note: Please include your Application ID in the payment memo.</em>
+                    </p>
+                </div>
+            `;
+            this.elements.paymentCard.classList.remove('hidden');
+        }
+
         this.elements.timeline.classList.add('hidden');
     }
 
