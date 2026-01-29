@@ -68,25 +68,19 @@ class ApplicantDashboard {
                 sendBtn.disabled = true;
                 sendBtn.textContent = 'Sending...';
                 
-                try {
-                    const res = await fetch('/api/recover-id', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email })
-                    });
-                    const data = await res.json();
-                    
-                    message.textContent = data.message || data.error;
-                    message.classList.remove('hidden');
-                    message.style.color = data.error ? 'var(--danger)' : 'var(--success)';
-                } catch (err) {
-                    message.textContent = 'Connection error. Please try again.';
-                    message.classList.remove('hidden');
-                    message.style.color = 'var(--danger)';
-                } finally {
-                    sendBtn.disabled = false;
-                    sendBtn.textContent = 'Send IDs';
-                }
+                // ============================================================
+                // SUPABASE PLACEHOLDER: RECOVER ID
+                // This would call a Supabase Edge Function to find IDs by email and send them
+                /*
+                const { data, error } = await client.functions.invoke('recover-application-id', {
+                    body: { email }
+                });
+                */
+                console.log('Supabase ID recovery placeholder triggered');
+                message.textContent = 'Check your email for your application IDs.';
+                message.classList.remove('hidden');
+                message.style.color = 'var(--success)';
+                // ============================================================
             };
         }
     }

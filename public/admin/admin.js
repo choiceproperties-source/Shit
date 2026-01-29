@@ -187,12 +187,16 @@ class AdminDetail {
 
             if (error) throw error;
 
-            // Trigger Email notification (via backend API as per current hybrid state)
-            await fetch(`/api/admin/application/${this.appId}/payment`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status })
+            // ============================================================
+            // SUPABASE PLACEHOLDER: PAYMENT NOTIFICATION
+            // This would trigger a Supabase Edge Function to send an email
+            /*
+            const { data, error } = await client.functions.invoke('send-payment-email', {
+                body: { applicationId: this.appId, status }
             });
+            */
+            console.log('Supabase payment notification placeholder triggered');
+            // ============================================================
 
             window.location.reload();
         } catch (err) { 
@@ -205,12 +209,31 @@ class AdminDetail {
         const status = document.getElementById('statusSelect').value;
         if (!confirm(`Change status to ${status.replace('_', ' ')}? An email will be sent to the applicant.`)) return;
         try {
-            const res = await fetch(`/api/admin/application/${this.appId}/status`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status })
+            const config = {
+                URL: "https://pwqjungiwusflcflukeg.supabase.co/",
+                KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cWp1bmdpd3VzZmxjZmx1a2VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1MDIwODAsImV4cCI6MjA4NTA3ODA4MH0.yq_0LfPc81cq_ptDZGnxbs3RDfhW8PlQaTfYUs_bsLE"
+            };
+            const client = supabase.createClient(config.URL, config.KEY);
+
+            // ============================================================
+            // SUPABASE PLACEHOLDER: STATUS UPDATE
+            const { error } = await client
+                .from('rental_applications')
+                .update({ application_status: status })
+                .eq('application_id', this.appId);
+
+            if (error) throw error;
+
+            // Trigger Email notification placeholder
+            /*
+            await client.functions.invoke('send-status-email', {
+                body: { applicationId: this.appId, status }
             });
-            if (res.ok) window.location.reload();
+            */
+            console.log('Supabase status update placeholder triggered');
+            // ============================================================
+            
+            window.location.reload();
         } catch (err) { console.error(err); }
     }
 }
