@@ -993,12 +993,9 @@ class RentalApplication {
     delay(ms) { return new Promise(res => setTimeout(res, ms)); }
     
     generateApplicationId() {
-        if (!this.state.applicationId) {
-            this.state.applicationId = 'CP-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-        }
-        const display = document.getElementById('successAppId');
-        if (display) display.textContent = this.state.applicationId;
-        return this.state.applicationId;
+        const timestamp = Date.now();
+        const randomChars = Math.random().toString(36).substring(2, 6).toUpperCase();
+        return `CP-${timestamp}-${randomChars}`;
     }
     
     generateApplicationSummary() {
