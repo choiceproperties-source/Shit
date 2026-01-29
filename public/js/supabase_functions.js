@@ -60,23 +60,41 @@ export async function submitApplication(supabase, formData) {
 
 /**
  * uploadDocument
- * Uploads a file to Supabase Storage
+ * Securely uploads a file to the 'application-documents' bucket.
+ * 
+ * @param {Object} supabase - Initialized Supabase client
+ * @param {File} file - The file object from input
+ * @param {string} applicationId - The ID of the application
+ * @param {string} category - 'photo-id' or 'income-verification'
+ * @returns {Promise<Object>} Upload result with path
  */
-export async function uploadDocument(supabase, file, applicationId) {
+export async function uploadDocument(supabase, file, applicationId, category) {
     try {
+        if (!supabase) throw new Error("Supabase client not provided");
+        
+        const uuid = Math.random().toString(36).substring(2, 15);
         const fileExt = file.name.split('.').pop();
-        const fileName = `${applicationId}/${Math.random().toString(36).substring(2)}.${fileExt}`;
-        const filePath = `documents/${fileName}`;
+        const safeFileName = file.name.replace(/[^a-z0-9.]/gi, '_').toLowerCase();
+        
+        // Structured path: /applications/{application_id}/{category}/{uuid}-{original_filename}
+        const filePath = `applications/${applicationId}/${category}/${uuid}-${safeFileName}`;
 
-        const { error: uploadError } = await supabase.storage
+        const { data, error: uploadError } = await supabase.storage
             .from('application-documents')
-            .upload(filePath, file);
+            .upload(filePath, file, {
+                cacheControl: '3600',
+                upsert: false
+            });
 
         if (uploadError) throw uploadError;
 
-        return { success: true, path: filePath };
+        return { 
+            success: true, 
+            path: filePath,
+            fullUrl: data.path 
+        };
     } catch (error) {
-        console.error("Upload error:", error);
+        console.error("Storage upload error:", error);
         return { success: false, error: error.message };
     }
 }
