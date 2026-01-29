@@ -666,8 +666,13 @@ class RentalApplication {
             
             this.updateSubmissionProgress(3, 'Preparing submission...');
             
-            const applicationIdPlaceholder = this.generateApplicationId();
-            document.getElementById('formApplicationId').value = applicationIdPlaceholder;
+            // 1. Generate unique application_id (timestamp + random suffix)
+            const timestamp = Date.now();
+            const randomSuffix = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const applicationId = `CP-${timestamp}-${randomSuffix}`;
+            this.state.applicationId = applicationId;
+            
+            document.getElementById('formApplicationId').value = applicationId;
             
             this.updateSubmissionProgress(4, 'Submitting application to Choice Properties database...');
             
@@ -676,10 +681,9 @@ class RentalApplication {
             delete formData.ssn;
             delete formData.SSN;
 
-            const applicationId = this.generateApplicationId();
-            
+            // 2. Insert record into Supabase table 'rental_applications'
             if (this.supabase) {
-                const { data, error } = await this.supabase
+                const { error } = await this.supabase
                     .from('rental_applications')
                     .insert([
                         { 
@@ -687,7 +691,9 @@ class RentalApplication {
                             form_data: formData,
                             property_address: formData.propertyAddress,
                             applicant_email: formData.email,
-                            applicant_name: `${formData.firstName} ${formData.lastName}`
+                            applicant_name: `${formData.firstName} ${formData.lastName}`,
+                            application_status: 'awaiting_payment',
+                            payment_status: 'pending'
                         }
                     ]);
 
@@ -696,16 +702,20 @@ class RentalApplication {
                 throw new Error('Database service not initialized');
             }
             
+            // 3. Log success
+            console.log('Application submitted successfully:', applicationId);
+            
             this.handleSubmissionSuccess(applicationId);
             
-            // Send notification to admin and confirmation to applicant
-            fetch('/api/submit-application-legacy', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...formData, applicationId })
-            }).catch(err => console.error('Notification error:', err));
+            // Trigger Edge Function placeholder (optional/future)
+            if (this.supabase && this.supabase.functions) {
+                 this.supabase.functions.invoke('send-email', {
+                    body: { type: 'submission', applicationId }
+                }).catch(err => console.error('Email trigger error:', err));
+            }
             
         } catch (error) {
+            // 4. Log error
             console.error('Submission error:', error);
             // Hide loading state on button
             const submitBtn = document.getElementById('mainSubmitBtn');
