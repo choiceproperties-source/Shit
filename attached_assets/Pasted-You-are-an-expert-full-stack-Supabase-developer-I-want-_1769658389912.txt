@@ -1,0 +1,104 @@
+You are an expert full-stack Supabase developer. 
+
+I want you to fully implement my rental application project using only Supabase (no Python). My project has a 5-step application form frontend (HTML/CSS/JS) and an admin/applicant dashboard. You must produce **working code, SQL, Edge Functions, and JS integration**, with step-by-step instructions where to copy each snippet. Follow this workflow strictly:
+
+---
+
+### 1️⃣ Database: rental_applications Table
+
+- Table name: rental_applications
+- Columns:
+  - application_id (text, primary key)
+  - applicant_email (text)
+  - applicant_name (text)
+  - property_address (text)
+  - application_status (text: 'awaiting_payment', 'under_review', 'approved', 'denied')
+  - payment_status (text: 'pending', 'paid')
+  - form_data (jsonb)
+  - created_at (timestamp with default now())
+- Enable Row Level Security (RLS):
+  - Applicants can only read their own records via application_id
+  - Admins can read/update all records
+- Provide full SQL code and explain where to run it in Supabase.
+
+---
+
+### 2️⃣ Storage: application-documents Bucket
+
+- Create a private bucket named "application-documents"
+- File structure:
+  - /applications/{application_id}/photo-id/{uuid}-{original_filename}
+  - /applications/{application_id}/income-verification/{uuid}-{original_filename}
+- Only accessible via signed URLs
+- Provide JS code to securely upload files from frontend using Supabase JS SDK
+- Explain where to place this code in the frontend
+
+---
+
+### 3️⃣ Supabase Edge Functions
+
+**A. send-email function**
+- Triggered after application submission, payment confirmation, or status updates
+- Accepts: application_id, applicant_email, status, optional_notes
+- Sends emails via SendGrid:
+  - Submission → "Application Received – Payment Required to Proceed"
+  - Payment confirmed → "Payment Confirmed – Application Now Under Review"
+  - Status change → "Application Status Update"
+- Include bilingual English/Spanish email content
+- Provide full deployable JS code
+
+**B. recover-id function**
+- Accepts applicant_email
+- Looks up rental_applications for application_id
+- Sends the application_id via email
+- Provide full deployable JS code
+
+- Include instructions on how to save each Edge Function in Supabase
+
+---
+
+### 4️⃣ Frontend Integration (HTML/JS)
+
+**Form Submission**
+- Save form data into rental_applications
+- Generate application_id automatically
+- Set application_status = 'awaiting_payment', payment_status = 'pending'
+- Trigger send-email Edge Function after successful save
+- Include autosave to local storage with subtle “Progress Saved” message
+- Add address autocomplete using Geoapify (key: bea2afb13c904abea5cb2c2693541dcf)
+- Validate phone/email/SSN in real-time
+- Optional SSN field with subtle encryption/privacy message
+
+**Admin Dashboard**
+- Mark payment as paid → update payment_status to 'paid', application_status to 'under_review'
+- Trigger send-email Edge Function on each status change
+- Display full application details and payment status
+- Include placeholder for payment notes
+
+**Applicant Dashboard**
+- Real-time subscription to their application using Supabase
+- Show status badges, next steps, uploaded documents
+- Allow document uploads to application-documents bucket
+- Option to recover application ID via recover-id Edge Function
+
+- Provide all JS code, clearly labeled, with instructions where to copy/paste into existing HTML/JS files.
+
+---
+
+### 5️⃣ Constraints & Rules
+
+- Do **not** use Python or any backend other than Supabase
+- Do **not** add payment processors; assume manual $50 fee
+- All email triggers must go through Supabase Edge Functions
+- Follow the current 5-step form structure exactly
+- Preserve existing UX, validation, and styling
+- Explain all steps and code placement clearly
+
+---
+
+Output everything **in one structured response** with separate code blocks for:
+1. SQL
+2. Storage JS
+3. send-email Edge Function
+4. recover-id Edge Function
+5. Frontend JS snippets (submission, dashboard updates, file upload, real-time subscription)
