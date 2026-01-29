@@ -1,0 +1,43 @@
+I want you to perform a complete audit of my current web project and provide a detailed report.
+
+1️⃣ FRONTEND ANALYSIS
+- List all pages, forms, fields, and UI components.
+- Indicate which fields are required, optional, and sensitive (like SSN, documents, income).
+- Show any frontend logic implemented (validations, auto-save, autocomplete, dynamic behaviors).
+- Identify any missing or incomplete UX features according to modern best practices.
+
+2️⃣ BACKEND / DATABASE ANALYSIS
+- List all tables, columns, and relationships (including foreign keys and sensitive data handling).
+- Explain how each table is used in the project (e.g., applications, users, co-applicants, documents).
+- Indicate which tables store encrypted or sensitive data.
+- Describe any backend logic implemented (e.g., serverless functions, email notifications, payment handling, application ID generation).
+
+3️⃣ AUTHENTICATION & ROLES
+- Describe how applicant and admin authentication is implemented.
+- List role permissions and what each role can do on the frontend and backend.
+- Indicate any missing authentication features (e.g., forgot password, email verification).
+
+4️⃣ EMAIL & NOTIFICATIONS
+- List all automated emails or notifications implemented (SendGrid or other).
+- Indicate triggers, recipients, and content of each email.
+- Note any missing email flows.
+
+5️⃣ FILE STORAGE & UPLOADS
+- Describe how uploaded files are handled (storage path, file type, size limits).
+- Explain access permissions and security measures (signed URLs, private access).
+
+6️⃣ DASHBOARDS & UI WORKFLOW
+- Explain applicant and admin dashboard functionality.
+- Show how application statuses, payment status, and documents are displayed and updated.
+- Identify any missing features for workflow completion.
+
+7️⃣ SECURITY & BEST PRACTICES
+- Point out how sensitive data is encrypted or handled securely.
+- Highlight any potential security or privacy issues.
+
+8️⃣ REMAINING WORK
+- Based on the current project, give a list of features and steps required to complete the project fully.
+- Include both frontend and backend tasks.
+- Suggest improvements or optimizations for UX, security, or performance.
+
+⚠️ Output everything clearly in structured sections, so I can use this as a master reference to complete the project. Make sure your analysis is accurate to the current state of the codebase.
