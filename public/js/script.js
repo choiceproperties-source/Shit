@@ -716,7 +716,10 @@ class RentalApplication {
                         applicant_name: `${formData.firstName} ${formData.lastName}`,
                         status: 'awaiting_payment'
                     }
-                }).catch(err => console.error('Email trigger error:', err));
+                }).catch(err => {
+                    console.error('Email trigger error:', err);
+                    // Fallback to older method if available or just log
+                });
             }
             
         } catch (error) {
