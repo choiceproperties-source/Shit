@@ -707,10 +707,15 @@ class RentalApplication {
             
             this.handleSubmissionSuccess(applicationId);
             
-            // Trigger Edge Function placeholder (optional/future)
-            if (this.supabase && this.supabase.functions) {
+            // 4. Trigger Email Notification via Supabase Edge Function
+            if (this.supabase) {
                  this.supabase.functions.invoke('send-email', {
-                    body: { type: 'submission', applicationId }
+                    body: { 
+                        application_id: applicationId,
+                        applicant_email: formData.email,
+                        applicant_name: `${formData.firstName} ${formData.lastName}`,
+                        status: 'awaiting_payment'
+                    }
                 }).catch(err => console.error('Email trigger error:', err));
             }
             
