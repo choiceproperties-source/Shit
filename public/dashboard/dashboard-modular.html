@@ -1,0 +1,102 @@
+<!-- 
+  Place this in public/dashboard/index.html 
+  Replaces the existing dashboardView section
+-->
+<div id="dashboardView" class="hidden">
+    <!-- 1. Live Status Banner -->
+    <section class="status-banner" id="statusBanner">
+        <!-- Injected via JS -->
+    </section>
+
+    <div class="dashboard-grid">
+        <div class="main-column">
+            <!-- 2. Application Details Card -->
+            <section class="card">
+                <h3><i class="fas fa-file-alt"></i> Application Overview</h3>
+                <div class="details-list">
+                    <div class="detail-item">
+                        <span class="label">Application ID</span>
+                        <span id="displayAppId" class="value"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Property Address</span>
+                        <span id="displayProperty" class="value"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Submission Date</span>
+                        <span id="displayDate" class="value"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Payment Status</span>
+                        <span id="displayPaymentStatus" class="value"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Dynamic Timeline (Shows when payment is confirmed) -->
+            <section id="timelineSection" class="card hidden">
+                <h3><i class="fas fa-tasks"></i> Review Timeline</h3>
+                <div class="timeline-steps">
+                    <div class="timeline-step step-completed">
+                        <div class="step-icon"><i class="fas fa-check"></i></div>
+                        <div class="step-content">
+                            <h4>Application Submitted</h4>
+                            <p>We received your details.</p>
+                        </div>
+                    </div>
+                    <div id="timelinePayment" class="timeline-step">
+                        <div class="step-icon"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="step-content">
+                            <h4>Payment Verification</h4>
+                            <p id="paymentStatusText">Awaiting $50 application fee.</p>
+                        </div>
+                    </div>
+                    <div id="timelineReview" class="timeline-step">
+                        <div class="step-icon"><i class="fas fa-search"></i></div>
+                        <div class="step-content">
+                            <h4>Management Review</h4>
+                            <p>Background and credit checks in progress.</p>
+                        </div>
+                    </div>
+                    <div id="timelineDecision" class="timeline-step">
+                        <div class="step-icon"><i class="fas fa-flag-checkered"></i></div>
+                        <div class="step-content">
+                            <h4>Final Decision</h4>
+                            <p>Ready for lease signing.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <aside class="side-column">
+            <!-- 4. Payment Instruction Card (Shows when pending) -->
+            <div id="paymentActionCard" class="card hidden" style="border: 2px solid var(--warning);">
+                <h3><i class="fas fa-exclamation-circle"></i> Payment Required</h3>
+                <p>To begin review, please complete the <strong>$50 non-refundable fee</strong>.</p>
+                <div style="background: var(--light); padding: 15px; border-radius: 8px; font-size: 0.9rem;">
+                    <strong>Instructions:</strong>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>Zelle: <code>choice@email.com</code></li>
+                        <li>Venmo: <code>@ChoiceProperties</code></li>
+                        <li>Memo: Include Application ID</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 5. Documents Card -->
+            <div class="card">
+                <h3><i class="fas fa-paperclip"></i> Documents</h3>
+                <div id="documentList" class="value" style="font-size: 0.9rem;">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-headset"></i> Support</h3>
+                <p style="font-size: 0.85rem;">Questions? Contact us at:</p>
+                <a href="mailto:support@choiceproperties.com" style="color: var(--secondary); font-weight: 600;">support@choiceproperties.com</a>
+            </div>
+        </aside>
+    </div>
+</div>

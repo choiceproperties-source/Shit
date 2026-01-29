@@ -1,0 +1,120 @@
+/* Applicant Dashboard Styles */
+:root {
+    --primary: #1a5276;
+    --secondary: #3498db;
+    --accent: #e67e22;
+    --success: #27ae60;
+    --danger: #e74c3c;
+    --warning: #f1c40f;
+    --light: #f8f9fa;
+    --dark: #2c3e50;
+    --border: #dee2e6;
+    --text-muted: #6c757d;
+}
+
+body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background-color: #f4f7f6;
+    color: var(--dark);
+    margin: 0;
+}
+
+.dashboard-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    padding: 24px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+}
+
+.status-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.banner-pending { background: #fff9db; color: #856404; border: 1px solid #ffeeba; }
+.banner-review { background: #e7f5ff; color: #004085; border: 1px solid #b8daff; }
+.banner-approved { background: #ebfbee; color: #0f5132; border: 1px solid #badbcc; }
+.banner-denied { background: #fff5f5; color: #842029; border: 1px solid #f5c2c7; }
+
+.badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge-paid { background: var(--success); color: white; }
+.badge-pending { background: var(--warning); color: black; }
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+}
+
+@media (max-width: 768px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--light);
+}
+
+.detail-item:last-child { border-bottom: none; }
+
+.label { color: var(--text-muted); font-weight: 500; }
+.value { font-weight: 600; }
+
+.timeline {
+    margin-top: 20px;
+}
+
+.timeline-step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.timeline-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 30px;
+    bottom: -10px;
+    width: 2px;
+    background: var(--border);
+}
+
+.step-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.step-completed .step-icon { background: var(--success); color: white; }
+.step-active .step-icon { background: var(--secondary); color: white; }
+
+.hidden { display: none !important; }
