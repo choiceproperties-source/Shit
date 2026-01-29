@@ -174,7 +174,6 @@ class AdminDetail {
             };
             const client = supabase.createClient(config.URL, config.KEY);
 
-            // Update Supabase directly for the new architecture
             const { error } = await client
                 .from('rental_applications')
                 .update({ 
@@ -187,21 +186,19 @@ class AdminDetail {
 
             if (error) throw error;
 
-            // ============================================================
-            // SUPABASE PLACEHOLDER: PAYMENT NOTIFICATION
-            // This would trigger a Supabase Edge Function to send an email
-            /*
-            const { data, error } = await client.functions.invoke('send-payment-email', {
-                body: { applicationId: this.appId, status }
+            // Trigger Email notification via Edge Function
+            await client.functions.invoke('send-email', {
+                body: { 
+                    type: 'payment_confirmed',
+                    applicationId: this.appId 
+                }
             });
-            */
-            console.log('Supabase payment notification placeholder triggered');
-            // ============================================================
 
             window.location.reload();
         } catch (err) { 
             console.error('Update payment error:', err);
-            alert('Failed to update payment status');
+            alert('Payment updated, but email trigger may have failed.');
+            window.location.reload();
         }
     }
 
@@ -215,8 +212,6 @@ class AdminDetail {
             };
             const client = supabase.createClient(config.URL, config.KEY);
 
-            // ============================================================
-            // SUPABASE PLACEHOLDER: STATUS UPDATE
             const { error } = await client
                 .from('rental_applications')
                 .update({ application_status: status })
@@ -224,16 +219,20 @@ class AdminDetail {
 
             if (error) throw error;
 
-            // Trigger Email notification placeholder
-            /*
-            await client.functions.invoke('send-status-email', {
-                body: { applicationId: this.appId, status }
+            // Trigger Email notification via Edge Function
+            await client.functions.invoke('send-email', {
+                body: { 
+                    type: 'status_update',
+                    applicationId: this.appId,
+                    status: status
+                }
             });
-            */
-            console.log('Supabase status update placeholder triggered');
-            // ============================================================
             
             window.location.reload();
-        } catch (err) { console.error(err); }
+        } catch (err) { 
+            console.error(err);
+            alert('Status updated, but email notification failed.');
+            window.location.reload();
+        }
     }
 }
