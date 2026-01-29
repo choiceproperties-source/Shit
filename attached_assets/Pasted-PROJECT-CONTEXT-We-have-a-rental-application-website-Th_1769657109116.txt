@@ -1,0 +1,59 @@
+PROJECT CONTEXT:
+We have a rental application website. The frontend is in HTML/CSS/JS and the backend uses Supabase. Applications are stored in the "rental_applications" table with fields:
+- id (uuid)
+- application_id (text)
+- property_address (text)
+- applicant_name (text)
+- applicant_email (text)
+- form_data (jsonb)
+- created_at (timestamp)
+
+STATUS LOGIC:
+- application_status: "awaiting_payment", "under_review", "approved", "denied"
+- payment_status: "pending", "paid"
+
+TASK:
+Generate a fully functional Applicant Dashboard using the existing frontend framework (HTML/CSS/JS) that satisfies the following:
+
+FRONTEND REQUIREMENTS:
+1. Show all applications for the currently logged-in applicant (filter by email/session).
+2. Display per application:
+   - Application ID
+   - Property Address
+   - Submission Date
+   - Payment Status (🟡 Pending, ✅ Paid)
+   - Application Status (Awaiting Payment, Under Review, Approved, Denied)
+3. Show next steps/messages dynamically based on status:
+   - Awaiting Payment: instructions to pay outside the system
+   - Under Review: review timeline and next steps
+   - Approved: approval message and next steps
+   - Denied: denial message and respectful disclaimer
+4. Real-time updates when application_status or payment_status changes.
+5. Show uploaded documents (list) and allow download via secure signed URLs.
+
+BACKEND / SUPABASE LOGIC:
+1. Fetch applications filtered by applicant_email securely.
+2. Use Supabase Realtime or subscriptions to auto-update dashboard when admin changes status or confirms payment.
+3. Ensure sensitive data (SSN) is masked or not shown.
+
+UX REQUIREMENTS:
+1. Status badges with clear colors/icons:
+   - 🟡 Pending Payment
+   - 🔍 Under Review
+   - ✅ Approved
+   - ❌ Denied
+2. Clear next step instructions per status.
+3. Dashboard should be mobile-friendly.
+
+SECURITY:
+1. Only the logged-in applicant can see their own applications.
+2. Supabase keys must remain secure, not exposed in frontend code.
+
+OUTPUT FORMAT:
+- Provide exact files (HTML, CSS, JS) or code snippets.
+- Include instructions where to paste each file in the project structure.
+- Ensure the code integrates with the existing form and database structure.
+- No assumptions about changing backend tech (Supabase remains).
+- No payment processor integration; continue using manual payment logic.
+
+Please provide complete, ready-to-use code for this Applicant Dashboard.

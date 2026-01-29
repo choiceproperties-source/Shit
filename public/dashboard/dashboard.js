@@ -118,7 +118,6 @@ class ApplicantDashboard {
     }
 
     async fetchApplicationStatus() {
-        // Updated to use Supabase as requested
         if (typeof supabase === 'undefined') {
             console.error('Supabase not loaded');
             return null;
@@ -130,6 +129,22 @@ class ApplicantDashboard {
         };
         
         const client = supabase.createClient(config.URL, config.KEY);
+
+        // 1. Setup Realtime Subscription
+        client
+            .channel('db-changes')
+            .on('postgres_changes', { 
+                event: 'UPDATE', 
+                schema: 'public', 
+                table: 'rental_applications',
+                filter: `application_id=eq.${this.appId}`
+            }, payload => {
+                console.log('Realtime update:', payload.new);
+                this.renderDashboard(payload.new);
+            })
+            .subscribe();
+
+        // 2. Initial Fetch
         const { data, error } = await client
             .from('rental_applications')
             .select('*')
@@ -141,6 +156,16 @@ class ApplicantDashboard {
             return null;
         }
         return data;
+    }
+
+    async getSignedUrl(filePath) {
+        const config = {
+            URL: "https://pwqjungiwusflcflukeg.supabase.co/",
+            KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cWp1bmdpd3VzZmxjZmx1a2VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1MDIwODAsImV4cCI6MjA4NTA3ODA4MH0.yq_0LfPc81cq_ptDZGnxbs3RDfhW8PlQaTfYUs_bsLE"
+        };
+        const client = supabase.createClient(config.URL, config.KEY);
+        const { data, error } = await client.storage.from('application-documents').createSignedUrl(filePath, 3600);
+        return error ? null : data.signedUrl;
     }
 
     renderDashboard(app) {
@@ -155,6 +180,9 @@ class ApplicantDashboard {
         const status = app.application_status;
         const payment = app.payment_status;
 
+        // Render Documents
+        this.renderDocuments(app);
+
         // Logic based on requirements
         if (payment === 'pending') {
             this.renderAwaitingPayment();
@@ -165,8 +193,39 @@ class ApplicantDashboard {
         } else if (status === 'denied') {
             this.renderDenied();
         } else {
-            // Default/Fallback
             this.renderUnderReview();
+        }
+    }
+
+    async renderDocuments(app) {
+        const sideCol = document.querySelector('.side-column');
+        let docCard = document.getElementById('documentCard');
+        if (!docCard) {
+            docCard = document.createElement('div');
+            docCard.id = 'documentCard';
+            docCard.className = 'card';
+            sideCol.insertBefore(docCard, sideCol.lastElementChild);
+        }
+
+        const docs = app.form_data?.documents || [];
+        if (docs.length === 0) {
+            docCard.innerHTML = '<h3><i class="fas fa-file-pdf"></i> Documents</h3><p style="font-size:0.9rem; color:var(--text-muted);">No documents uploaded.</p>';
+            return;
+        }
+
+        docCard.innerHTML = '<h3><i class="fas fa-file-pdf"></i> Documents</h3><ul id="docList" style="list-style:none; padding:0;"></ul>';
+        const docList = document.getElementById('docList');
+
+        for (const doc of docs) {
+            const li = document.createElement('li');
+            li.style.cssText = 'margin-bottom:10px; font-size:0.9rem; display:flex; align-items:center; gap:8px;';
+            const url = await this.getSignedUrl(doc.path);
+            li.innerHTML = `
+                <i class="fas fa-file-alt"></i>
+                <span style="flex:1;">${doc.name}</span>
+                ${url ? `<a href="${url}" target="_blank" style="color:var(--primary); text-decoration:none;"><i class="fas fa-download"></i></a>` : ''}
+            `;
+            docList.appendChild(li);
         }
     }
 
@@ -253,7 +312,7 @@ class ApplicantDashboard {
     renderDenied() {
         this.elements.banner.className = 'status-banner banner-denied';
         this.elements.banner.innerHTML = `
-            <i class="fas fa-info-circle"></i>
+            <i class="fas fa-times-circle"></i>
             <div>Application Decision Reached</div>
         `;
         
@@ -264,6 +323,9 @@ class ApplicantDashboard {
             <h3>Application Status</h3>
             <p>Thank you for your interest in Choice Properties. At this time, we are unable to approve your application.</p>
             <p style="margin-top: 15px; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 15px;">
+                <strong>Decision Notice:</strong> Decisions are based on a combination of factors including income requirements, credit history, and rental references. We appreciate the opportunity to review your application.
+            </p>
+            <p style="margin-top: 15px; font-size: 0.85rem; color: var(--text-muted);">
                 <strong>Fair Housing Notice:</strong> We are committed to compliance with all federal, state, and local fair housing laws. We do not discriminate against any person because of race, color, religion, national origin, sex, familial status, disability, or any other protected characteristic.
             </p>
         `;
