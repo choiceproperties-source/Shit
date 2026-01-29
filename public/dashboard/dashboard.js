@@ -20,11 +20,82 @@ class ApplicantDashboard {
             displayDate: document.getElementById('displayDate'),
             timeline: document.getElementById('timelineSection'),
             paymentCard: document.getElementById('paymentInfoCard'),
-            logoutBtn: document.getElementById('logoutBtn')
+            logoutBtn: document.getElementById('logoutBtn'),
+            docCard: document.getElementById('documentCard'),
+            docListContainer: document.getElementById('docListContainer'),
+            uploadBtn: document.getElementById('uploadBtn'),
+            docInput: document.getElementById('additionalDocInput'),
+            uploadStatus: document.getElementById('uploadStatus')
         };
         
+        this.supabaseClient = null;
         this.setupLogin();
         this.setupRecovery();
+        this.setupUpload();
+    }
+
+    setupUpload() {
+        if (this.elements.uploadBtn) {
+            this.elements.uploadBtn.addEventListener('click', () => this.elements.docInput.click());
+        }
+
+        if (this.elements.docInput) {
+            this.elements.docInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                try {
+                    this.elements.uploadStatus.textContent = 'Uploading...';
+                    this.elements.uploadStatus.classList.remove('hidden');
+                    this.elements.uploadBtn.disabled = true;
+
+                    const fileExt = file.name.split('.').pop();
+                    const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+                    const filePath = `applications/${this.appId}/additional/${fileName}`;
+
+                    const { error: uploadError } = await this.supabaseClient.storage
+                        .from('application-documents')
+                        .upload(filePath, file);
+
+                    if (uploadError) throw uploadError;
+
+                    // Update form_data.documents in rental_applications
+                    const { data: currentApp } = await this.supabaseClient
+                        .from('rental_applications')
+                        .select('form_data')
+                        .eq('application_id', this.appId)
+                        .single();
+
+                    const formData = currentApp.form_data || {};
+                    const documents = formData.documents || [];
+                    documents.push({
+                        name: file.name,
+                        path: filePath,
+                        uploaded_at: new Date().toISOString()
+                    });
+                    formData.documents = documents;
+
+                    const { error: updateError } = await this.supabaseClient
+                        .from('rental_applications')
+                        .update({ form_data: formData })
+                        .eq('application_id', this.appId);
+
+                    if (updateError) throw updateError;
+
+                    this.elements.uploadStatus.textContent = 'Uploaded successfully!';
+                    this.elements.uploadStatus.style.color = 'var(--success)';
+                } catch (err) {
+                    console.error('Upload error:', err);
+                    this.elements.uploadStatus.textContent = 'Upload failed.';
+                    this.elements.uploadStatus.style.color = 'var(--danger)';
+                } finally {
+                    this.elements.uploadBtn.disabled = false;
+                    setTimeout(() => {
+                        this.elements.uploadStatus.classList.add('hidden');
+                    }, 3000);
+                }
+            });
+        }
     }
 
     setupLogin() {
@@ -135,10 +206,10 @@ class ApplicantDashboard {
             KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cWp1bmdpd3VzZmxjZmx1a2VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1MDIwODAsImV4cCI6MjA4NTA3ODA4MH0.yq_0LfPc81cq_ptDZGnxbs3RDfhW8PlQaTfYUs_bsLE"
         };
         
-        const client = supabase.createClient(config.URL, config.KEY);
+        this.supabaseClient = supabase.createClient(config.URL, config.KEY);
 
         // 1. Setup Realtime Subscription
-        client
+        this.supabaseClient
             .channel('db-changes')
             .on('postgres_changes', { 
                 event: 'UPDATE', 
@@ -152,7 +223,7 @@ class ApplicantDashboard {
             .subscribe();
 
         // 2. Initial Fetch
-        const { data, error } = await client
+        const { data, error } = await this.supabaseClient
             .from('rental_applications')
             .select('*')
             .eq('application_id', this.appId)
@@ -166,12 +237,7 @@ class ApplicantDashboard {
     }
 
     async getSignedUrl(filePath) {
-        const config = {
-            URL: "https://pwqjungiwusflcflukeg.supabase.co/",
-            KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cWp1bmdpd3VzZmxjZmx1a2VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1MDIwODAsImV4cCI6MjA4NTA3ODA4MH0.yq_0LfPc81cq_ptDZGnxbs3RDfhW8PlQaTfYUs_bsLE"
-        };
-        const client = supabase.createClient(config.URL, config.KEY);
-        const { data, error } = await client.storage.from('application-documents').createSignedUrl(filePath, 3600);
+        const { data, error } = await this.supabaseClient.storage.from('application-documents').createSignedUrl(filePath, 3600);
         return error ? null : data.signedUrl;
     }
 
@@ -205,22 +271,15 @@ class ApplicantDashboard {
     }
 
     async renderDocuments(app) {
-        const sideCol = document.querySelector('.side-column');
-        let docCard = document.getElementById('documentCard');
-        if (!docCard) {
-            docCard = document.createElement('div');
-            docCard.id = 'documentCard';
-            docCard.className = 'card';
-            sideCol.insertBefore(docCard, sideCol.lastElementChild);
-        }
-
+        if (this.elements.docCard) this.elements.docCard.classList.remove('hidden');
         const docs = app.form_data?.documents || [];
+        
         if (docs.length === 0) {
-            docCard.innerHTML = '<h3><i class="fas fa-file-pdf"></i> Documents</h3><p style="font-size:0.9rem; color:var(--text-muted);">No documents uploaded.</p>';
+            this.elements.docListContainer.innerHTML = '<p style="font-size:0.9rem; color:var(--text-muted);">No documents uploaded.</p>';
             return;
         }
 
-        docCard.innerHTML = '<h3><i class="fas fa-file-pdf"></i> Documents</h3><ul id="docList" style="list-style:none; padding:0;"></ul>';
+        this.elements.docListContainer.innerHTML = '<ul id="docList" style="list-style:none; padding:0;"></ul>';
         const docList = document.getElementById('docList');
 
         for (const doc of docs) {
@@ -229,8 +288,8 @@ class ApplicantDashboard {
             const url = await this.getSignedUrl(doc.path);
             li.innerHTML = `
                 <i class="fas fa-file-alt"></i>
-                <span style="flex:1;">${doc.name}</span>
-                ${url ? `<a href="${url}" target="_blank" style="color:var(--primary); text-decoration:none;"><i class="fas fa-download"></i></a>` : ''}
+                <span style="flex:1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${doc.name}</span>
+                ${url ? `<a href="${url}" target="_blank" style="color:var(--primary); text-decoration:none;"><i class="fas fa-download"></i></a>` : '<i class="fas fa-lock" title="URL expired"></i>'}
             `;
             docList.appendChild(li);
         }
@@ -241,46 +300,32 @@ class ApplicantDashboard {
         this.elements.banner.innerHTML = `
             <i class="fas fa-clock" style="color: #f1c40f;"></i>
             <div>
-                <div style="font-weight: bold;">🟡 Application Submitted – Awaiting Payment Confirmation</div>
+                <div style="font-weight: bold;">🟡 Awaiting Payment Confirmation</div>
                 <div style="font-size: 0.85rem; margin-top: 5px; opacity: 0.9;">
-                    Your application has been received. Please complete the $50 application fee to begin the review process.
+                    Please complete the $50 application fee to begin the review process.
                 </div>
             </div>
         `;
         
-        // Add Payment Pending badge if not exists
-        const detailsList = document.querySelector('.details-list');
-        if (detailsList && !document.getElementById('paymentBadge')) {
-            const badgeItem = document.createElement('div');
-            badgeItem.className = 'detail-item';
-            badgeItem.id = 'paymentBadge';
-            badgeItem.innerHTML = `
-                <span class="label">Payment Status:</span>
-                <span class="value"><span class="badge pay-pending" style="background: #f1c40f; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">PENDING</span></span>
-            `;
-            detailsList.appendChild(badgeItem);
-        }
-
-        // Update Payment Info Card with accepted methods
+        this.updateBadges('awaiting_payment', 'pending');
+        
         if (this.elements.paymentCard) {
             this.elements.paymentCard.innerHTML = `
                 <h3><i class="fas fa-info-circle"></i> Payment Required</h3>
                 <p>A non-refundable <strong>$50 application fee</strong> is required before we can begin reviewing your application.</p>
                 <div class="payment-note" style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-top: 10px;">
-                    <p><strong>Accepted Payment Methods:</strong></p>
+                    <p><strong>Accepted Methods:</strong></p>
                     <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.9rem;">
                         <li>Zelle (choiceproperties@email.com)</li>
                         <li>Venmo (@ChoiceProperties)</li>
-                        <li>Cashier's Check / Money Order</li>
                     </ul>
-                    <p style="font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.2); pt-10; margin-top: 10px;">
-                        <em>Note: Please include your Application ID in the payment memo.</em>
+                    <p style="font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 10px; margin-top: 10px;">
+                        <em>Include App ID: <strong>${this.appId}</strong> in memo.</em>
                     </p>
                 </div>
             `;
             this.elements.paymentCard.classList.remove('hidden');
         }
-
         this.elements.timeline.classList.add('hidden');
     }
 
@@ -290,13 +335,12 @@ class ApplicantDashboard {
             <i class="fas fa-search"></i>
             <div>Application Under Review</div>
         `;
+        this.updateBadges('under_review', 'paid');
         this.elements.timeline.classList.remove('hidden');
+        this.elements.paymentCard.classList.add('hidden');
         
-        // Update timeline steps
         document.getElementById('paymentStep').classList.add('completed');
         document.getElementById('paymentStep').querySelector('.step-icon').innerHTML = '<i class="fas fa-check"></i>';
-        document.getElementById('paymentStep').querySelector('p').textContent = 'Fee confirmed.';
-        
         document.getElementById('reviewStep').classList.add('active');
     }
 
@@ -306,9 +350,10 @@ class ApplicantDashboard {
             <i class="fas fa-check-circle"></i>
             <div>Congratulations! Your Application is Approved</div>
         `;
+        this.updateBadges('approved', 'paid');
         this.elements.timeline.classList.remove('hidden');
+        this.elements.paymentCard.classList.add('hidden');
         
-        // Complete all steps
         ['paymentStep', 'reviewStep', 'finalStep'].forEach(id => {
             const step = document.getElementById(id);
             step.classList.add('completed');
@@ -322,22 +367,46 @@ class ApplicantDashboard {
             <i class="fas fa-times-circle"></i>
             <div>Application Decision Reached</div>
         `;
-        
-        const mainCol = document.querySelector('.main-column');
-        const card = document.createElement('section');
-        card.className = 'card';
-        card.innerHTML = `
-            <h3>Application Status</h3>
-            <p>Thank you for your interest in Choice Properties. At this time, we are unable to approve your application.</p>
-            <p style="margin-top: 15px; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 15px;">
-                <strong>Decision Notice:</strong> Decisions are based on a combination of factors including income requirements, credit history, and rental references. We appreciate the opportunity to review your application.
-            </p>
-            <p style="margin-top: 15px; font-size: 0.85rem; color: var(--text-muted);">
-                <strong>Fair Housing Notice:</strong> We are committed to compliance with all federal, state, and local fair housing laws. We do not discriminate against any person because of race, color, religion, national origin, sex, familial status, disability, or any other protected characteristic.
-            </p>
-        `;
-        mainCol.appendChild(card);
+        this.updateBadges('denied', 'paid');
         this.elements.timeline.classList.add('hidden');
+        this.elements.paymentCard.classList.add('hidden');
+    }
+
+    updateBadges(status, payment) {
+        const detailsList = document.querySelector('.details-list');
+        if (!detailsList) return;
+
+        let statusBadge = document.getElementById('appStatusBadge');
+        if (!statusBadge) {
+            statusBadge = document.createElement('div');
+            statusBadge.className = 'detail-item';
+            statusBadge.id = 'appStatusBadge';
+            detailsList.appendChild(statusBadge);
+        }
+
+        const statusColors = {
+            'awaiting_payment': '#f1c40f',
+            'under_review': '#3498db',
+            'approved': '#2ecc71',
+            'denied': '#e74c3c'
+        };
+
+        statusBadge.innerHTML = `
+            <span class="label">Status:</span>
+            <span class="value"><span class="badge" style="background: ${statusColors[status] || '#7f8c8d'}; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase;">${status.replace('_', ' ')}</span></span>
+        `;
+
+        let paymentBadge = document.getElementById('paymentBadge');
+        if (!paymentBadge) {
+            paymentBadge = document.createElement('div');
+            paymentBadge.className = 'detail-item';
+            paymentBadge.id = 'paymentBadge';
+            detailsList.appendChild(paymentBadge);
+        }
+        paymentBadge.innerHTML = `
+            <span class="label">Payment:</span>
+            <span class="value"><span class="badge" style="background: ${payment === 'paid' ? '#2ecc71' : '#f1c40f'}; color: ${payment === 'paid' ? 'white' : 'black'}; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase;">${payment}</span></span>
+        `;
     }
 
     showError(msg) {
